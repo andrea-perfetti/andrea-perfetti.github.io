@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title> SLAE32 - Assignment 4 - Encoder | Andrea Perfetti</title>
+  <meta name="description" content="YHQL, YLGL, YLFL.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="all,follow">
+  <meta name="googlebot" content="index,follow,snippet,archive">
+  <meta property="og:title" content="SLAE32 - Assignment 4 - Encoder" />
+<meta property="og:description" content="The fourth assigment for the SLAE32 certification asks to create a custom encoding scheme like the &ldquo;Insertion Encoder&rdquo; that has been presented in the course. a PoC is also requested, using execve-stack shellcode.
+The encoding schema I have decided to go for a variation of the Insertion Encoder, adding some randomness. After each byte of the shellcode, I add a byte which could range from 0x1 to 0x4 and states how many garbage bytes will follow." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-10-slae32-assignment-4/" />
+<meta property="article:published_time" content="2021-03-11T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-03-11T00:00:00+00:00" />
+
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="SLAE32 - Assignment 4 - Encoder"/>
+<meta name="twitter:description" content="The fourth assigment for the SLAE32 certification asks to create a custom encoding scheme like the &ldquo;Insertion Encoder&rdquo; that has been presented in the course. a PoC is also requested, using execve-stack shellcode.
+The encoding schema I have decided to go for a variation of the Insertion Encoder, adding some randomness. After each byte of the shellcode, I add a byte which could range from 0x1 to 0x4 and states how many garbage bytes will follow."/>
+
+  
+  
+    
+  
+  
+  <link rel="stylesheet" href="https://andrea-perfetti.github.io/css/style-white.css">
+  
+  
+  
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
+
+  
+<link rel="icon" type="image/png" href="https://andrea-perfetti.github.io/images/favicon.ico" />
+
+  
+  
+  
+  
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+  <div class="content index py4">
+
+  <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+        <li><a href="/">Home</a></li>
+         
+        <li><a href="/posts">Posts</a></li>
+         
+        <li><a href="/tags">Tags</a></li>
+         
+        <li><a href="https://www.andreaperfetti.it/">About me</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li>
+          <a class="icon" href=" https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-07-slae32-assignment-6/">
+            <i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i>
+          </a>
+        </li>
+        
+        
+        <li>
+          <a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');">
+            <i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i>
+          </a>
+        </li>
+        <li>
+          <a class="icon" href="#">
+            <i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i>
+          </a>
+        </li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      
+      <ul>
+  
+  
+    
+  
+  
+  <li>
+    <a class="icon" href="http://www.facebook.com/sharer.php?u=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-10-slae32-assignment-4%2f">
+      <i class="fab fa-facebook " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-10-slae32-assignment-4%2f&text=SLAE32%20-%20Assignment%204%20-%20Encoder">
+      <i class="fab fa-twitter " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-10-slae32-assignment-4%2f&title=SLAE32%20-%20Assignment%204%20-%20Encoder">
+      <i class="fab fa-linkedin " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-10-slae32-assignment-4%2f&is_video=false&description=SLAE32%20-%20Assignment%204%20-%20Encoder">
+      <i class="fab fa-pinterest " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="mailto:?subject=SLAE32%20-%20Assignment%204%20-%20Encoder&body=Check out this article: https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-10-slae32-assignment-4%2f">
+      <i class="fas fa-envelope " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-10-slae32-assignment-4%2f&title=SLAE32%20-%20Assignment%204%20-%20Encoder">
+      <i class="fab fa-get-pocket " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-10-slae32-assignment-4%2f&title=SLAE32%20-%20Assignment%204%20-%20Encoder">
+      <i class="fab fa-reddit " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.stumbleupon.com/submit?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-10-slae32-assignment-4%2f&title=SLAE32%20-%20Assignment%204%20-%20Encoder">
+      <i class="fab fa-stumbleupon " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://digg.com/submit?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-10-slae32-assignment-4%2f&title=SLAE32%20-%20Assignment%204%20-%20Encoder">
+      <i class="fab fa-digg " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-10-slae32-assignment-4%2f&name=SLAE32%20-%20Assignment%204%20-%20Encoder&description=The%20fourth%20assigment%20for%20the%20SLAE32%20certification%20asks%20to%20create%20a%20custom%20encoding%20scheme%20like%20the%20%26ldquo%3bInsertion%20Encoder%26rdquo%3b%20that%20has%20been%20presented%20in%20the%20course.%20a%20PoC%20is%20also%20requested%2c%20using%20execve-stack%20shellcode.%0aThe%20encoding%20schema%20I%20have%20decided%20to%20go%20for%20a%20variation%20of%20the%20Insertion%20Encoder%2c%20adding%20some%20randomness.%20After%20each%20byte%20of%20the%20shellcode%2c%20I%20add%20a%20byte%20which%20could%20range%20from%200x1%20to%200x4%20and%20states%20how%20many%20garbage%20bytes%20will%20follow.">
+      <i class="fab fa-tumblr " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-10-slae32-assignment-4%2f&t=SLAE32%20-%20Assignment%204%20-%20Encoder">
+      <i class="fab fa-hacker-news " aria-hidden="true"></i>
+    </a>
+  </li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#the-encoding-schema">The encoding schema</a></li>
+  </ul>
+</nav>
+    </div>
+  </span>
+</div>
+
+
+  <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+      <h1 class="posttitle" itemprop="name headline">
+        SLAE32 - Assignment 4 - Encoder
+      </h1>
+      <div class="meta">
+        
+        <div class="postdate">
+          
+          <time datetime="2021-03-11 00:00:00 &#43;0000 UTC" itemprop="datePublished">2021-03-11</time>
+          
+        </div>
+        
+        <div class="article-category">
+            <i class="fas fa-archive"></i>
+            
+            
+            <a class="category-link" href="/categories/slae32-exam-assignments">SLAE32 Exam Assignments</a>
+            
+        </div>
+        
+        
+        <div class="article-tag">
+            <i class="fas fa-tag"></i>
+            
+            
+            <a class="tag-link" href="/tags/slae32" rel="tag">SLAE32</a>
+            
+        </div>
+        
+      </div>
+    </header>
+
+  
+    <div class="content" itemprop="articleBody">
+      <p>The fourth assigment for the SLAE32 certification asks to create a custom encoding scheme like the &ldquo;Insertion Encoder&rdquo; that has been presented in the course.  a PoC is also requested, using <em>execve-stack</em> shellcode.</p>
+<h2 id="the-encoding-schema">The encoding schema</h2>
+<p>I have decided to go for a variation of the Insertion Encoder, adding some randomness.
+After each byte of the shellcode, I add a byte which could range from 0x1 to 0x4 and states how many <em>garbage</em> bytes will follow. After last byte of the shellcode, <code>\xFF</code> is being added as a terminator marker.</p>
+<p><img src="img/slae/image.png" alt="image"></p>
+<!-- raw HTML omitted -->
+<hr>
+<p>This blog post has been created for completing the requirements of the SecurityTube Linux Assembly Expert certification: <a href="http://securitytube-training.com/online-courses/securitytube-linux-assembly-expert/">http://securitytube-training.com/online-courses/securitytube-linux-assembly-expert/</a>.</p>
+<p><strong>Student ID: <code>SLAE - 1547</code></strong></p>
+<!-- raw HTML omitted -->
+
+    </div>
+  </article>
+
+  
+  
+
+
+
+
+
+  <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/posts">Posts</a></li>
+         
+          <li><a href="/tags">Tags</a></li>
+         
+          <li><a href="https://www.andreaperfetti.it/">About me</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#the-encoding-schema">The encoding schema</a></li>
+  </ul>
+</nav>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      
+      <ul>
+  
+  
+    
+  
+  
+  <li>
+    <a class="icon" href="http://www.facebook.com/sharer.php?u=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-10-slae32-assignment-4%2f">
+      <i class="fab fa-facebook fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-10-slae32-assignment-4%2f&text=SLAE32%20-%20Assignment%204%20-%20Encoder">
+      <i class="fab fa-twitter fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-10-slae32-assignment-4%2f&title=SLAE32%20-%20Assignment%204%20-%20Encoder">
+      <i class="fab fa-linkedin fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-10-slae32-assignment-4%2f&is_video=false&description=SLAE32%20-%20Assignment%204%20-%20Encoder">
+      <i class="fab fa-pinterest fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="mailto:?subject=SLAE32%20-%20Assignment%204%20-%20Encoder&body=Check out this article: https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-10-slae32-assignment-4%2f">
+      <i class="fas fa-envelope fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-10-slae32-assignment-4%2f&title=SLAE32%20-%20Assignment%204%20-%20Encoder">
+      <i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-10-slae32-assignment-4%2f&title=SLAE32%20-%20Assignment%204%20-%20Encoder">
+      <i class="fab fa-reddit fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.stumbleupon.com/submit?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-10-slae32-assignment-4%2f&title=SLAE32%20-%20Assignment%204%20-%20Encoder">
+      <i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://digg.com/submit?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-10-slae32-assignment-4%2f&title=SLAE32%20-%20Assignment%204%20-%20Encoder">
+      <i class="fab fa-digg fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-10-slae32-assignment-4%2f&name=SLAE32%20-%20Assignment%204%20-%20Encoder&description=The%20fourth%20assigment%20for%20the%20SLAE32%20certification%20asks%20to%20create%20a%20custom%20encoding%20scheme%20like%20the%20%26ldquo%3bInsertion%20Encoder%26rdquo%3b%20that%20has%20been%20presented%20in%20the%20course.%20a%20PoC%20is%20also%20requested%2c%20using%20execve-stack%20shellcode.%0aThe%20encoding%20schema%20I%20have%20decided%20to%20go%20for%20a%20variation%20of%20the%20Insertion%20Encoder%2c%20adding%20some%20randomness.%20After%20each%20byte%20of%20the%20shellcode%2c%20I%20add%20a%20byte%20which%20could%20range%20from%200x1%20to%200x4%20and%20states%20how%20many%20garbage%20bytes%20will%20follow.">
+      <i class="fab fa-tumblr fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-10-slae32-assignment-4%2f&t=SLAE32%20-%20Assignment%204%20-%20Encoder">
+      <i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;">
+          <i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;">
+          <i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;">
+          <i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');">
+          <i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+
+  <footer id="footer">
+  <div class="footer-left">
+    Copyright  &copy; 2021  Andrea Perfetti 
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+        <li><a href="/">Home</a></li>
+         
+        <li><a href="/posts">Posts</a></li>
+         
+        <li><a href="/tags">Tags</a></li>
+         
+        <li><a href="https://www.andreaperfetti.it/">About me</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+
+  </div>
+</body>
+
+<link rel="stylesheet" href=/lib/font-awesome/css/all.min.css>
+<script src=/lib/jquery/jquery.min.js></script>
+<script src=/js/main.js></script>
+
+
+
+</html>

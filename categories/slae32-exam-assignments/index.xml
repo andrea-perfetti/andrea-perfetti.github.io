@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>SLAE32 on Andrea Perfetti</title>
-    <link>https://andrea-perfetti.github.io/tags/slae32/</link>
-    <description>Recent content in SLAE32 on Andrea Perfetti</description>
+    <title>SLAE32 Exam Assignments on Andrea Perfetti</title>
+    <link>https://andrea-perfetti.github.io/categories/slae32-exam-assignments/</link>
+    <description>Recent content in SLAE32 Exam Assignments on Andrea Perfetti</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Andrea Perfetti</copyright>
-    <lastBuildDate>Thu, 11 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://andrea-perfetti.github.io/tags/slae32/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 11 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://andrea-perfetti.github.io/categories/slae32-exam-assignments/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>SLAE32 - Assignment 4 - Encoder</title>
       <link>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-10-slae32-assignment-4/</link>

@@ -9,6 +9,16 @@
     <copyright>Andrea Perfetti</copyright>
     <lastBuildDate>Thu, 11 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://andrea-perfetti.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>SLAE32 - Assignment 4 - Encoder</title>
+      <link>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-10-slae32-assignment-4/</link>
+      <pubDate>Thu, 11 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-10-slae32-assignment-4/</guid>
+      <description>The fourth assigment for the SLAE32 certification asks to create a custom encoding scheme like the &amp;ldquo;Insertion Encoder&amp;rdquo; that has been presented in the course. a PoC is also requested, using execve-stack shellcode.
+The encoding schema I have decided to go for a variation of the Insertion Encoder, adding some randomness. After each byte of the shellcode, I add a byte which could range from 0x1 to 0x4 and states how many garbage bytes will follow.</description>
+    </item>
+    
+    <item>
       <title>SLAE32 - Assignment 6 - Polymorphism</title>
       <link>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-07-slae32-assignment-6/</link>
       <pubDate>Thu, 11 Mar 2021 00:00:00 +0000</pubDate>
