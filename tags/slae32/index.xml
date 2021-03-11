@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Andrea Perfetti</title>
-    <link>https://andrea-perfetti.github.io/</link>
-    <description>Recent content on Andrea Perfetti</description>
+    <title>SLAE32 on Andrea Perfetti</title>
+    <link>https://andrea-perfetti.github.io/tags/slae32/</link>
+    <description>Recent content in SLAE32 on Andrea Perfetti</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Andrea Perfetti</copyright>
-    <lastBuildDate>Thu, 11 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://andrea-perfetti.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 11 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://andrea-perfetti.github.io/tags/slae32/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>SLAE32 - Assignment 6 - Polymorphism</title>
       <link>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-07-slae32-assignment-6/</link>
@@ -19,17 +19,6 @@ The polymorphic version cannot be larger more than 150% of the original shellcod
 For each shellcode, the following steps have been followed:
  Download the shellcode into &amp;lt;Name&amp;gt;-Shellstorm&amp;lt;ID&amp;gt;.txt Extract the shellcode and pass it to ndisasm with the command:
 echo --ne &amp;quot;&amp;lt;SHELLCODE&amp;gt;&amp;quot; | ndisasm -u - &amp;gt; original_disasm.</description>
-    </item>
-    
-    <item>
-      <title>Hello, world!</title>
-      <link>https://andrea-perfetti.github.io/posts/2021-03-06-hello-world/</link>
-      <pubDate>Sat, 06 Mar 2021 10:00:00 +0000</pubDate>
-      
-      <guid>https://andrea-perfetti.github.io/posts/2021-03-06-hello-world/</guid>
-      <description>Hello, World!
-This is a placeholder post.
-Contents will come!</description>
     </item>
     
   </channel>
