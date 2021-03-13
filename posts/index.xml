@@ -7,7 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Andrea Perfetti</copyright>
-    <lastBuildDate>Thu, 11 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://andrea-perfetti.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 13 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://andrea-perfetti.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>SLAE32 - Assignment 7 - Crypter</title>
+      <link>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-13-slae32-assignment-7/</link>
+      <pubDate>Sat, 13 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-13-slae32-assignment-7/</guid>
+      <description>The seventh assignment for the SLAE32 certification asks to create a custom crypter like the one shown in the &amp;ldquo;Crypters&amp;rdquo; video. You are free to use any existing encryption schema and any programming language.
+I have decided to use Python3 and - after some research - to give Fernet a try.
+According to the documentation (&amp;quot;Limitations&amp;quot; section):
+ Fernet is ideal for encrypting data that easily fits in memory. As a design feature it does not expose unauthenticated bytes.</description>
+    </item>
+    
     <item>
       <title>SLAE32 - Assignment 4 - Encoder</title>
       <link>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-10-slae32-assignment-4/</link>
