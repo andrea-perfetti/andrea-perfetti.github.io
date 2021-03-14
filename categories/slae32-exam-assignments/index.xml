@@ -7,7 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Andrea Perfetti</copyright>
-    <lastBuildDate>Sat, 13 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://andrea-perfetti.github.io/categories/slae32-exam-assignments/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 14 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://andrea-perfetti.github.io/categories/slae32-exam-assignments/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>SLAE32 - Assignment 5 - Analysis</title>
+      <link>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-14-slae32-assignment-5/</link>
+      <pubDate>Sun, 14 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-14-slae32-assignment-5/</guid>
+      <description>The fifth assigment for the SLAE32 certification asks to choose 3 shellcode samples created with Msfpayload for linux/x86 and dissect them presenting the analysis.
+The list of available shellcodes have been generated using the following command:
+msfvenom --list payloads | grep linux/x86 ReadFile The first shellcode I have selected is linux/x86/read_file.
+First of all, we need to understand which parameters this shellcode needs:
+┌──(kali㉿kali)-[~/SLAE32-Exam/5.1-ReadFile] └─$ msfvenom -p linux/x86/read_file -a x86 --platform linux --list-options Options for payload/linux/x86/read_file: ========================= Name: Linux Read File Module: payload/linux/x86/read_file Platform: Linux Arch: x86 Needs Admin: No Total size: 62 Rank: Normal Provided by: hal Basic options: Name Current Setting Required Description ---- --------------- -------- ----------- FD 1 yes The file descriptor to write output to PATH yes The file path to read Description: Read up to 4096 bytes from the local file system and write it back out to the specified file descriptor I opted for /tmp/flag.</description>
+    </item>
+    
     <item>
       <title>SLAE32 - Assignment 7 - Crypter</title>
       <link>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-13-slae32-assignment-7/</link>
