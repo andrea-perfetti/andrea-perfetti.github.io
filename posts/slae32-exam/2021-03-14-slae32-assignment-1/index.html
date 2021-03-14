@@ -9,7 +9,7 @@
   <meta name="robots" content="all,follow">
   <meta name="googlebot" content="index,follow,snippet,archive">
   <meta property="og:title" content="SLAE32 - Assignment 1 - TCP Bind Shell" />
-<meta property="og:description" content="The sixth assigment for the SLAE32 certification asks to write a TCP Bind Shell shellcode that binds to a port and then executes a shell on the incoming connection. Requirement is that port number should be easily configurable.
+<meta property="og:description" content="The first assigment for the SLAE32 certification asks to write a TCP Bind Shell shellcode that binds to a port and then executes a shell on the incoming connection. Requirement is that port number should be easily configurable.
 TCP Bind Shell in C Let&rsquo;s first of all create a TCP bind shell in C that listens to port 4444. This is the code:
 #include &lt;stdio.h&gt;#include &lt;sys/socket.h&gt;#include &lt;netinet/ip.h&gt;#include &lt;unistd.h&gt; int main (){ // Creating File Descriptor for the Socket		int socket_fd; socket_fd = socket(AF_INET, SOCK_STREAM, 0); // Binding the socket to server address 	struct sockaddr_in server_address; server_address." />
 <meta property="og:type" content="article" />
@@ -19,7 +19,7 @@ TCP Bind Shell in C Let&rsquo;s first of all create a TCP bind shell in C that l
 
   <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="SLAE32 - Assignment 1 - TCP Bind Shell"/>
-<meta name="twitter:description" content="The sixth assigment for the SLAE32 certification asks to write a TCP Bind Shell shellcode that binds to a port and then executes a shell on the incoming connection. Requirement is that port number should be easily configurable.
+<meta name="twitter:description" content="The first assigment for the SLAE32 certification asks to write a TCP Bind Shell shellcode that binds to a port and then executes a shell on the incoming connection. Requirement is that port number should be easily configurable.
 TCP Bind Shell in C Let&rsquo;s first of all create a TCP bind shell in C that listens to port 4444. This is the code:
 #include &lt;stdio.h&gt;#include &lt;sys/socket.h&gt;#include &lt;netinet/ip.h&gt;#include &lt;unistd.h&gt; int main (){ // Creating File Descriptor for the Socket		int socket_fd; socket_fd = socket(AF_INET, SOCK_STREAM, 0); // Binding the socket to server address 	struct sockaddr_in server_address; server_address."/>
 
@@ -73,7 +73,7 @@ TCP Bind Shell in C Let&rsquo;s first of all create a TCP bind shell in C that l
       <ul>
         
         <li>
-          <a class="icon" href=" https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-14-slae32-assignment-5/">
+          <a class="icon" href=" https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-14-slae32-assignment-2/">
             <i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i>
           </a>
         </li>
@@ -150,7 +150,7 @@ TCP Bind Shell in C Let&rsquo;s first of all create a TCP bind shell in C that l
     </a>
   </li>
   <li>
-    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-14-slae32-assignment-1%2f&name=SLAE32%20-%20Assignment%201%20-%20TCP%20Bind%20Shell&description=The%20sixth%20assigment%20for%20the%20SLAE32%20certification%20asks%20to%20write%20a%20TCP%20Bind%20Shell%20shellcode%20that%20binds%20to%20a%20port%20and%20then%20executes%20a%20shell%20on%20the%20incoming%20connection.%20Requirement%20is%20that%20port%20number%20should%20be%20easily%20configurable.%0aTCP%20Bind%20Shell%20in%20C%20Let%26rsquo%3bs%20first%20of%20all%20create%20a%20TCP%20bind%20shell%20in%20C%20that%20listens%20to%20port%204444.%20This%20is%20the%20code%3a%0a%23include%20%26lt%3bstdio.h%26gt%3b%23include%20%26lt%3bsys%2fsocket.h%26gt%3b%23include%20%26lt%3bnetinet%2fip.h%26gt%3b%23include%20%26lt%3bunistd.h%26gt%3b%20int%20main%20%28%29%7b%20%2f%2f%20Creating%20File%20Descriptor%20for%20the%20Socket%09%09int%20socket_fd%3b%20socket_fd%20%3d%20socket%28AF_INET%2c%20SOCK_STREAM%2c%200%29%3b%20%2f%2f%20Binding%20the%20socket%20to%20server%20address%20%09struct%20sockaddr_in%20server_address%3b%20server_address.">
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-14-slae32-assignment-1%2f&name=SLAE32%20-%20Assignment%201%20-%20TCP%20Bind%20Shell&description=The%20first%20assigment%20for%20the%20SLAE32%20certification%20asks%20to%20write%20a%20TCP%20Bind%20Shell%20shellcode%20that%20binds%20to%20a%20port%20and%20then%20executes%20a%20shell%20on%20the%20incoming%20connection.%20Requirement%20is%20that%20port%20number%20should%20be%20easily%20configurable.%0aTCP%20Bind%20Shell%20in%20C%20Let%26rsquo%3bs%20first%20of%20all%20create%20a%20TCP%20bind%20shell%20in%20C%20that%20listens%20to%20port%204444.%20This%20is%20the%20code%3a%0a%23include%20%26lt%3bstdio.h%26gt%3b%23include%20%26lt%3bsys%2fsocket.h%26gt%3b%23include%20%26lt%3bnetinet%2fip.h%26gt%3b%23include%20%26lt%3bunistd.h%26gt%3b%20int%20main%20%28%29%7b%20%2f%2f%20Creating%20File%20Descriptor%20for%20the%20Socket%09%09int%20socket_fd%3b%20socket_fd%20%3d%20socket%28AF_INET%2c%20SOCK_STREAM%2c%200%29%3b%20%2f%2f%20Binding%20the%20socket%20to%20server%20address%20%09struct%20sockaddr_in%20server_address%3b%20server_address.">
       <i class="fab fa-tumblr " aria-hidden="true"></i>
     </a>
   </li>
@@ -221,7 +221,7 @@ TCP Bind Shell in C Let&rsquo;s first of all create a TCP bind shell in C that l
 
   
     <div class="content" itemprop="articleBody">
-      <p>The sixth assigment for the SLAE32 certification asks to write a TCP Bind Shell shellcode that binds to a port and then executes a shell on the incoming connection. Requirement is that port number should be easily configurable.</p>
+      <p>The first assigment for the SLAE32 certification asks to write a TCP Bind Shell shellcode that binds to a port and then executes a shell on the incoming connection. Requirement is that port number should be easily configurable.</p>
 <h2 id="tcp-bind-shell-in-c">TCP Bind Shell in C</h2>
 <p>Let&rsquo;s first of all create a TCP bind shell in C that listens to port 4444. This is the code:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
@@ -560,7 +560,7 @@ Linux kali 5.10.0-kali3-686-pae #1 SMP Debian 5.10.13-1kali1 (2021-02-08) i686 G
     </a>
   </li>
   <li>
-    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-14-slae32-assignment-1%2f&name=SLAE32%20-%20Assignment%201%20-%20TCP%20Bind%20Shell&description=The%20sixth%20assigment%20for%20the%20SLAE32%20certification%20asks%20to%20write%20a%20TCP%20Bind%20Shell%20shellcode%20that%20binds%20to%20a%20port%20and%20then%20executes%20a%20shell%20on%20the%20incoming%20connection.%20Requirement%20is%20that%20port%20number%20should%20be%20easily%20configurable.%0aTCP%20Bind%20Shell%20in%20C%20Let%26rsquo%3bs%20first%20of%20all%20create%20a%20TCP%20bind%20shell%20in%20C%20that%20listens%20to%20port%204444.%20This%20is%20the%20code%3a%0a%23include%20%26lt%3bstdio.h%26gt%3b%23include%20%26lt%3bsys%2fsocket.h%26gt%3b%23include%20%26lt%3bnetinet%2fip.h%26gt%3b%23include%20%26lt%3bunistd.h%26gt%3b%20int%20main%20%28%29%7b%20%2f%2f%20Creating%20File%20Descriptor%20for%20the%20Socket%09%09int%20socket_fd%3b%20socket_fd%20%3d%20socket%28AF_INET%2c%20SOCK_STREAM%2c%200%29%3b%20%2f%2f%20Binding%20the%20socket%20to%20server%20address%20%09struct%20sockaddr_in%20server_address%3b%20server_address.">
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fandrea-perfetti.github.io%2fposts%2fslae32-exam%2f2021-03-14-slae32-assignment-1%2f&name=SLAE32%20-%20Assignment%201%20-%20TCP%20Bind%20Shell&description=The%20first%20assigment%20for%20the%20SLAE32%20certification%20asks%20to%20write%20a%20TCP%20Bind%20Shell%20shellcode%20that%20binds%20to%20a%20port%20and%20then%20executes%20a%20shell%20on%20the%20incoming%20connection.%20Requirement%20is%20that%20port%20number%20should%20be%20easily%20configurable.%0aTCP%20Bind%20Shell%20in%20C%20Let%26rsquo%3bs%20first%20of%20all%20create%20a%20TCP%20bind%20shell%20in%20C%20that%20listens%20to%20port%204444.%20This%20is%20the%20code%3a%0a%23include%20%26lt%3bstdio.h%26gt%3b%23include%20%26lt%3bsys%2fsocket.h%26gt%3b%23include%20%26lt%3bnetinet%2fip.h%26gt%3b%23include%20%26lt%3bunistd.h%26gt%3b%20int%20main%20%28%29%7b%20%2f%2f%20Creating%20File%20Descriptor%20for%20the%20Socket%09%09int%20socket_fd%3b%20socket_fd%20%3d%20socket%28AF_INET%2c%20SOCK_STREAM%2c%200%29%3b%20%2f%2f%20Binding%20the%20socket%20to%20server%20address%20%09struct%20sockaddr_in%20server_address%3b%20server_address.">
       <i class="fab fa-tumblr fa-lg" aria-hidden="true"></i>
     </a>
   </li>

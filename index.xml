@@ -14,9 +14,19 @@
       <pubDate>Sun, 14 Mar 2021 00:00:00 +0000</pubDate>
       
       <guid>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-14-slae32-assignment-1/</guid>
-      <description>The sixth assigment for the SLAE32 certification asks to write a TCP Bind Shell shellcode that binds to a port and then executes a shell on the incoming connection. Requirement is that port number should be easily configurable.
+      <description>The first assigment for the SLAE32 certification asks to write a TCP Bind Shell shellcode that binds to a port and then executes a shell on the incoming connection. Requirement is that port number should be easily configurable.
 TCP Bind Shell in C Let&amp;rsquo;s first of all create a TCP bind shell in C that listens to port 4444. This is the code:
 #include &amp;lt;stdio.h&amp;gt;#include &amp;lt;sys/socket.h&amp;gt;#include &amp;lt;netinet/ip.h&amp;gt;#include &amp;lt;unistd.h&amp;gt; int main (){ // Creating File Descriptor for the Socket		int socket_fd; socket_fd = socket(AF_INET, SOCK_STREAM, 0); // Binding the socket to server address 	struct sockaddr_in server_address; server_address.</description>
+    </item>
+    
+    <item>
+      <title>SLAE32 - Assignment 2 - TCP Reverse Shell</title>
+      <link>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-14-slae32-assignment-2/</link>
+      <pubDate>Sun, 14 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-14-slae32-assignment-2/</guid>
+      <description>The second assigment for the SLAE32 certification asks to write a TCP Reverse Shell shellcode that connects to an address and a port and then executes a shell on successful connection. Requirement is that IP address and port number should be easily configurable.
+TCP Reverse Shell in C Let&amp;rsquo;s first of all create a TCP reverse shell in C that listens to port 4444 on localhost. This is the code:</description>
     </item>
     
     <item>
