@@ -7,7 +7,17 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Andrea Perfetti</copyright>
-    <lastBuildDate>Sun, 14 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://andrea-perfetti.github.io/tags/slae32/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 16 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://andrea-perfetti.github.io/tags/slae32/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>SLAE32 - Assignment 3 - EggHunter</title>
+      <link>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-16-slae32-assignment-3/</link>
+      <pubDate>Tue, 16 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-16-slae32-assignment-3/</guid>
+      <description>The third assigment for the SLAE32 certification asks to study about the EggHunter shellcode and to create a working demo of it (the demo should be configurable for different payloads).
+Egg Hunting (tl;dr) The most basic Buffer Overflow exploit technique consists of creating a string that contains garbage bytes, a memory address to be overwritten on the return address (which will be popped into EIP during the ret procedure) and some shellcode to be then executed, being invoked via a JMP ESP.</description>
+    </item>
+    
     <item>
       <title>SLAE32 - Assignment 1 - TCP Bind Shell</title>
       <link>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-14-slae32-assignment-1/</link>
