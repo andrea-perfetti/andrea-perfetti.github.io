@@ -15,9 +15,10 @@ msfvenom --list payloads | grep linux/x86 ReadFile The first shellcode I have se
 First of all, we need to understand which parameters this shellcode needs:
 ┌──(kali㉿kali)-[~/SLAE32-Exam/5.1-ReadFile] └─$ msfvenom -p linux/x86/read_file -a x86 --platform linux --list-options Options for payload/linux/x86/read_file: ========================= Name: Linux Read File Module: payload/linux/x86/read_file Platform: Linux Arch: x86 Needs Admin: No Total size: 62 Rank: Normal Provided by: hal Basic options: Name Current Setting Required Description ---- --------------- -------- ----------- FD 1 yes The file descriptor to write output to PATH yes The file path to read Description: Read up to 4096 bytes from the local file system and write it back out to the specified file descriptor I opted for /tmp/flag." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-14-slae32-assignment-5/" />
-<meta property="article:published_time" content="2021-03-14T00:00:00+00:00" />
-<meta property="article:modified_time" content="2021-03-14T00:00:00+00:00" />
+<meta property="og:url" content="https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-14-slae32-assignment-5/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-03-14T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2021-03-14T00:00:00&#43;00:00" />
+
 
   <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="SLAE32 - Assignment 5 - Analysis"/>
@@ -68,7 +69,7 @@ First of all, we need to understand which parameters this shellcode needs:
          
         <li><a href="/tags">Tags</a></li>
          
-        <li><a href="https://www.andreaperfetti.it/">About me</a></li>
+        <li><a href="/about">About me</a></li>
         
       </ul>
     </span>
@@ -409,7 +410,7 @@ Linux kali 5.10.0-kali3-686-pae #1 SMP Debian 5.10.13-1kali1 (2021-02-08) i686 G
          
           <li><a href="/tags">Tags</a></li>
          
-          <li><a href="https://www.andreaperfetti.it/">About me</a></li>
+          <li><a href="/about">About me</a></li>
         
       </ul>
     </div>
@@ -521,7 +522,7 @@ Linux kali 5.10.0-kali3-686-pae #1 SMP Debian 5.10.13-1kali1 (2021-02-08) i686 G
          
         <li><a href="/tags">Tags</a></li>
          
-        <li><a href="https://www.andreaperfetti.it/">About me</a></li>
+        <li><a href="/about">About me</a></li>
         
       </ul>
     </nav>

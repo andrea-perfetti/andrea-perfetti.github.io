@@ -9,6 +9,18 @@
     <copyright>Andrea Perfetti</copyright>
     <lastBuildDate>Tue, 16 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://andrea-perfetti.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>About me</title>
+      <link>https://andrea-perfetti.github.io/about/</link>
+      <pubDate>Sun, 28 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://andrea-perfetti.github.io/about/</guid>
+      <description>I’m Andrea, aka wh1ter4bb1t11.
+I have a special passion for everything related to cyber security.
+I’m a security enthusiast, desperately in love with Linux, food and music.
+If you are interested in my career, you can find my CV on my personal website.</description>
+    </item>
+    
+    <item>
       <title>SLAE32 - Assignment 3 - EggHunter</title>
       <link>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-16-slae32-assignment-3/</link>
       <pubDate>Tue, 16 Mar 2021 00:00:00 +0000</pubDate>
