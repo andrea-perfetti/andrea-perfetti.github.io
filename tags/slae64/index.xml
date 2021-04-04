@@ -9,6 +9,17 @@
     <copyright>Andrea Perfetti</copyright>
     <lastBuildDate>Sun, 04 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://andrea-perfetti.github.io/tags/slae64/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>SLAE64 - Assignment 2 - TCP Reverse Shell with passcode</title>
+      <link>https://andrea-perfetti.github.io/posts/slae64-exam/2021-04-04-slae64-assignment-2/</link>
+      <pubDate>Sun, 04 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://andrea-perfetti.github.io/posts/slae64-exam/2021-04-04-slae64-assignment-2/</guid>
+      <description>The second assigment for the SLAE64 certification asks to write a TCP Reverse Shell shellcode that connects to an address and a port and then executes a shell after verifying a &amp;ldquo;passcode&amp;rdquo; on successful connection.
+For the basic structure of a Reverse Shell TCP, please refer to assignment 5 and to related assignment for the SLAE32 certification.
+In order to verify the passcode, a code section has been added after the dup2 cycle, in order to perform a read syscall which puts the 8 bytes read on the stack and compares with the hardcoded passcode (acceptme).</description>
+    </item>
+    
+    <item>
       <title>SLAE64 - Assignment 5 - Analysis</title>
       <link>https://andrea-perfetti.github.io/posts/slae64-exam/2021-04-04-slae64-assignment-5/</link>
       <pubDate>Sun, 04 Apr 2021 00:00:00 +0000</pubDate>
