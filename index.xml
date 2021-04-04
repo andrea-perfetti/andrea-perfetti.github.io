@@ -7,7 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Andrea Perfetti</copyright>
-    <lastBuildDate>Tue, 16 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://andrea-perfetti.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 04 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://andrea-perfetti.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>SLAE64 - Assignment 5 - Analysis</title>
+      <link>https://andrea-perfetti.github.io/posts/slae64-exam/2021-04-04-slae64-assignment-5/</link>
+      <pubDate>Sun, 04 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://andrea-perfetti.github.io/posts/slae64-exam/2021-04-04-slae64-assignment-5/</guid>
+      <description>The fifth assigment for the SLAE64 certification asks to choose 3 shellcode samples created with Msfpayload for linux/x86_64 and dissect them presenting the analysis.
+The list of available shellcodes have been generated using the following command:
+┌──(kali㉿kali)-[~/Labs/SLAE64/Assignment-5] └─$ msfvenom --list payloads | grep linux/x64 &amp;gt; List_Payloads_Linux-x64.txt Bind TCP The first shellcode I have selected is linux/x64/shell_bind_tcp.
+First of all, we need to understand which parameters this shellcode needs:
+┌──(kali㉿kali)-[~/Labs/SLAE64/Assignment-5/5.1-ShellBindTcp] └─$ msfvenom -p linux/x64/shell_bind_tcp --list-options Options for payload/linux/x64/shell_bind_tcp: ========================= Name: Linux Command Shell, Bind TCP Inline Module: payload/linux/x64/shell_bind_tcp Platform: Linux Arch: x64 Needs Admin: No Total size: 86 Rank: Normal Provided by: ricky Basic options: Name Current Setting Required Description ---- --------------- -------- ----------- LPORT 4444 yes The listen port RHOST no The target address Description: Listen for a connection and spawn a command shell For the sake of diversity, I selected port 5555, therefore the shellcode generation is done with the following command:</description>
+    </item>
+    
     <item>
       <title>About me</title>
       <link>https://andrea-perfetti.github.io/about/</link>
