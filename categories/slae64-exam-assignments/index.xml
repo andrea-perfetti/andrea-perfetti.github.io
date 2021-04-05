@@ -20,6 +20,16 @@ In order to verify the passcode, a code section has been added after the dup2 cy
     </item>
     
     <item>
+      <title>SLAE64 - Assignment 3 - EggHunter</title>
+      <link>https://andrea-perfetti.github.io/posts/slae64-exam/2021-04-05-slae64-assignment-3/</link>
+      <pubDate>Mon, 05 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://andrea-perfetti.github.io/posts/slae64-exam/2021-04-05-slae64-assignment-3/</guid>
+      <description>The third assigment for the SLAE64 certification asks to study about the EggHunter shellcode and to create a working demo of it.
+Egg Hunting (tl;dr) The most basic Buffer Overflow exploit technique consists of creating a string that contains garbage bytes, a memory address to be overwritten on the return address (which will be popped into EIP during the ret procedure) and some shellcode to be then executed, being invoked via a JMP ESP.</description>
+    </item>
+    
+    <item>
       <title>SLAE64 - Assignment 2 - TCP Reverse Shell with passcode</title>
       <link>https://andrea-perfetti.github.io/posts/slae64-exam/2021-04-04-slae64-assignment-2/</link>
       <pubDate>Sun, 04 Apr 2021 00:00:00 +0000</pubDate>
