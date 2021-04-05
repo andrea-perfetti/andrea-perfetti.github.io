@@ -81,6 +81,12 @@ In order to verify the passcode, a code section has been added after the dup2 cy
         
         
         <li>
+          <a class="icon" href="https://andrea-perfetti.github.io/posts/slae64-exam/2021-04-05-slae64-assignment-1/">
+            <i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i>
+          </a>
+        </li>
+        
+        <li>
           <a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');">
             <i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i>
           </a>
@@ -219,7 +225,7 @@ In order to verify the passcode, a code section has been added after the dup2 cy
 <p>I have also added to the shellcode a check after the <em>connect()</em> syscall: if the connection is not successful (e.g. due to wrong listener activated) then the program exits with status code 1:
 <img src="/img/slae64/2-revtcp-wronglistener.png" alt="Reverse TCP - Example with unsuccessful connection"></p>
 <h2 id="customization-utility">Customization Utility</h2>
-<p>In order for the reverse shell to be customizable, the <code>BindShell-Skeleton.nasm</code> file has been created with a placeholders to be filled with appropriate chosen ip and port (line 24).</p>
+<p>In order for the reverse shell to be customizable, the <code>ReverseShell-Skeleton.nasm</code> file has been created with a placeholders to be filled with appropriate chosen ip and port (line 24).</p>
 <p>Given that the bytes have to be inserted as XOR-ed with 0xFF, in order to avoid null ones, the <code>ReverseShell-Utility.py</code> comes handy as it just requires to be executed passing the IP and Port for the connection as parameters, and appropriate value will be calculated and presented to the user:
 <img src="/img/slae64/2-revtcp-utility.png" alt="Reverse TCP - Python utility"></p>
 <p>The following screenshot shows the shell to localhost on port 6969, for which the parameter has been generated with the Python utility:
