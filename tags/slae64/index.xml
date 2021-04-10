@@ -7,7 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Andrea Perfetti</copyright>
-    <lastBuildDate>Mon, 05 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://andrea-perfetti.github.io/tags/slae64/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 10 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://andrea-perfetti.github.io/tags/slae64/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>SLAE64 - Assignment 6 - Polymorphism</title>
+      <link>https://andrea-perfetti.github.io/posts/slae64-exam/2021-09-10-slae64-assignment-6/</link>
+      <pubDate>Sat, 10 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://andrea-perfetti.github.io/posts/slae64-exam/2021-09-10-slae64-assignment-6/</guid>
+      <description>The sixth assigment for the SLAE64 certification asks to select 3 shellcodes from Shell-Storm and create a polymorphic version of them in order to beat pattern matching.
+The polymorphic version cannot be larger more than 150% of the original shellcode.
+For each shellcode, the following steps have been followed:
+ Download the shellcode to create Original.nasm Create polymorphic version Polymorphic.nasm Compile both to confirm that the behavior is the same  execve() The first shellcode I have selected is Linux/x86_64 execve.</description>
+    </item>
+    
     <item>
       <title>SLAE64 - Assignment 1 - TCP Bind Shell with passcode</title>
       <link>https://andrea-perfetti.github.io/posts/slae64-exam/2021-04-05-slae64-assignment-1/</link>
