@@ -7,7 +7,18 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Andrea Perfetti</copyright>
-    <lastBuildDate>Sat, 10 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://andrea-perfetti.github.io/categories/slae64-exam-assignments/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 11 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://andrea-perfetti.github.io/categories/slae64-exam-assignments/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>SLAE64 - Assignment 4 - Encoder</title>
+      <link>https://andrea-perfetti.github.io/posts/slae64-exam/2021-04-11-slae64-assignment-4/</link>
+      <pubDate>Sun, 11 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://andrea-perfetti.github.io/posts/slae64-exam/2021-04-11-slae64-assignment-4/</guid>
+      <description>The fourth assigment for the SLAE64 certification asks to create a custom encoding scheme like the &amp;ldquo;Insertion Encoder&amp;rdquo; that has been presented in the course. A PoC is also requested, using execve-stack shellcode.
+The encoding schema I have decided to go for a mix of the Insertion Encoder and XOR encoder.
+Each byte of the shellcode is XOR-ed with a variable key, and after the a garbage \xFE byte is added.</description>
+    </item>
+    
     <item>
       <title>SLAE64 - Assignment 6 - Polymorphism</title>
       <link>https://andrea-perfetti.github.io/posts/slae64-exam/2021-09-10-slae64-assignment-6/</link>
