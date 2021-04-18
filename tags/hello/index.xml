@@ -6,14 +6,13 @@
     <description>Recent content in Hello on Andrea Perfetti</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <copyright>Andrea Perfetti</copyright>
     <lastBuildDate>Sat, 06 Mar 2021 10:00:00 +0000</lastBuildDate><atom:link href="https://andrea-perfetti.github.io/tags/hello/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Hello, world!</title>
-      <link>https://andrea-perfetti.github.io/posts/2021-03-06-hello-world/</link>
+      <link>https://andrea-perfetti.github.io/2021/03/hello-world/</link>
       <pubDate>Sat, 06 Mar 2021 10:00:00 +0000</pubDate>
       
-      <guid>https://andrea-perfetti.github.io/posts/2021-03-06-hello-world/</guid>
+      <guid>https://andrea-perfetti.github.io/2021/03/hello-world/</guid>
       <description>Hello, World!
 This is a placeholder post.
 Contents will come!</description>

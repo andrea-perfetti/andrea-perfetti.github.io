@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.82.0 with theme Tranquilpeak 0.4.8-BETA">
+<meta name="author" content="Andrea Perfetti">
+<meta name="keywords" content="Assembly, Polymorphism">
+<meta name="description" content="The sixth assigment for the SLAE64 certification asks to select 3 shellcodes from Shell-Storm and create a polymorphic version of them in order to beat pattern matching.">
+
+
+<meta property="og:description" content="The sixth assigment for the SLAE64 certification asks to select 3 shellcodes from Shell-Storm and create a polymorphic version of them in order to beat pattern matching.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SLAE64 - Assignment 6 - Polymorphism">
+<meta name="twitter:title" content="SLAE64 - Assignment 6 - Polymorphism">
+<meta property="og:url" content="https://andrea-perfetti.github.io/2021/04/slae64-assignment-6-polymorphism/">
+<meta property="twitter:url" content="https://andrea-perfetti.github.io/2021/04/slae64-assignment-6-polymorphism/">
+<meta property="og:site_name" content="Andrea Perfetti">
+<meta property="og:description" content="The sixth assigment for the SLAE64 certification asks to select 3 shellcodes from Shell-Storm and create a polymorphic version of them in order to beat pattern matching.">
+<meta name="twitter:description" content="The sixth assigment for the SLAE64 certification asks to select 3 shellcodes from Shell-Storm and create a polymorphic version of them in order to beat pattern matching.">
+<meta property="og:locale" content="en-us">
+
+  
+    <meta property="article:published_time" content="2021-04-10T00:00:00">
+  
+  
+    <meta property="article:modified_time" content="2021-04-10T00:00:00">
+  
+  
+  
+    
+      <meta property="article:section" content="SLAE Exam Assignments">
+    
+      <meta property="article:section" content="SLAE 64-bit">
+    
+  
+  
+    
+      <meta property="article:tag" content="SLAE64">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+
+
+  <meta property="og:image" content="https://andrea-perfetti.github.io/img/slae64/0_slae64_badge.png">
+  <meta property="twitter:image" content="https://andrea-perfetti.github.io/img/slae64/0_slae64_badge.png">
+
+
+
+
+
+  <meta property="og:image" content="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg">
+  <meta property="twitter:image" content="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg">
+
+
+    <title>SLAE64 - Assignment 6 - Polymorphism</title>
+
+    <link rel="icon" href="https://andrea-perfetti.github.io/favicon.png">
+    
+
+    
+
+    <link rel="canonical" href="https://andrea-perfetti.github.io/2021/04/slae64-assignment-6-polymorphism/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="https://andrea-perfetti.github.io/css/style-twzjdbqhmnnacqs0pwwdzcdbt8yhv8giawvjqjmyfoqnvazl0dalmnhdkvp7.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="2">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="https://andrea-perfetti.github.io/">Andrea Perfetti</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="https://andrea-perfetti.github.io/#about">
+    
+    
+    
+      
+        <img class="header-picture" src="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg" alt="Author&#39;s picture" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="2">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="https://andrea-perfetti.github.io/#about">
+          <img class="sidebar-profile-picture" src="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg" alt="Author&#39;s picture" />
+        </a>
+        <h4 class="sidebar-profile-name">Andrea Perfetti</h4>
+        
+          <h5 class="sidebar-profile-bio">YHQL, YLGL, YLFL.</h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+      
+      <span class="sidebar-button-desc">Home</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/categories">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+      
+      <span class="sidebar-button-desc">Categories</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/tags">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+      
+      <span class="sidebar-button-desc">Tags</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/archives">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+      
+      <span class="sidebar-button-desc">Archives</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/about/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+      
+      <span class="sidebar-button-desc">About</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/andrea-perfetti" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/index.xml">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="2"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      SLAE64 - Assignment 6 - Polymorphism
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2021-04-10T00:00:00Z">
+        
+  
+  
+  
+  
+    2021-04-10
+  
+
+      </time>
+    
+    
+  
+  
+    <span>in</span>
+    
+      <a class="category-link" href="https://andrea-perfetti.github.io/categories/slae-exam-assignments">SLAE Exam Assignments</a>, 
+    
+      <a class="category-link" href="https://andrea-perfetti.github.io/categories/slae-64-bit">SLAE 64-bit</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              <p>The sixth assigment for the SLAE64 certification asks to select 3 shellcodes from <a href="http://shell-storm.org/">Shell-Storm</a> and create a polymorphic version of them in order to beat pattern matching.</p>
+<p>The polymorphic version cannot be larger more than 150% of the original shellcode.</p>
+<p>For each shellcode, the following steps have been followed:</p>
+<ul>
+<li>Download the shellcode to create <code>Original.nasm</code></li>
+<li>Create polymorphic version <code>Polymorphic.nasm</code></li>
+<li>Compile both to confirm that the behavior is the same</li>
+</ul>
+<h2 id="execve">execve()</h2>
+<p>The first shellcode I have selected is <a href="http://shell-storm.org/shellcode/files/shellcode-603.php">Linux/x86_64 execve</a>.</p>
+<p>For the polymorphic version, I shuffled a bit the usage of RAX and RDX and changed a <em>mov</em> operation with an <em>add</em>:
+<img src="https://andrea-perfetti.github.io/img/slae64/6-1-diff.png" alt=""></p>
+<p>As shown, the two shellcodes are working the same way:
+<img src="https://andrea-perfetti.github.io/img/slae64/6-1-execve.png" alt=""></p>
+<p>The original shellcode is 29 bytes long, the polymorphic version has 5 bytes more (118% of the original length).</p>
+<h2 id="execveat">execveat()</h2>
+<p>The second shellcode I have selected is <a href="http://shell-storm.org/shellcode/files/shellcode-905.php">execveat</a>.</p>
+<p>For the polymorphic version, I changed the initial setting of rax with the syscall number and transformed the final r8/r10 operations:
+<img src="https://andrea-perfetti.github.io/img/slae64/6-2-diff.png" alt=""></p>
+<p>As shown, the two shellcodes are working the same way:
+<img src="https://andrea-perfetti.github.io/img/slae64/6-2-execveat.png" alt=""></p>
+<p>The original shellcode is 28 bytes long, the polymorphic version has 1 byte more (104% of the original length).</p>
+<h2 id="add-map-in-etchosts">Add map in /etc/hosts</h2>
+<p>The third shellcode I have selected is <a href="http://shell-storm.org/shellcode/files/shellcode-896.php">Add map in /etc/hosts file</a>.</p>
+<p>I have changed the registers used to push string on the stack and replaced some mov / add  instructions with equivalent add / inc.
+<img src="https://andrea-perfetti.github.io/img/slae64/6-3-diff.png" alt=""></p>
+<p>Here is the behavior of the original shellcode:
+<img src="https://andrea-perfetti.github.io/img/slae64/6-3-hosts-original.png" alt=""></p>
+<p>Here is the same behavior achieved with she polymorphic shellcode:
+<img src="https://andrea-perfetti.github.io/img/slae64/6-3-hosts-polymorphic.png" alt=""></p>
+<p>The original shellcode is 108 bytes long, the polymorphic version is <strong>4 bytes shorter</strong> (97% of the original length).</p>
+<!-- raw HTML omitted -->
+<hr>
+<p>This blog post has been created for completing the requirements of the SecurityTube Linux Assembly Expert certification: <a href="http://www.securitytube-training.com/online-courses/x8664-assembly-and-shellcoding-on-linux/index.html">http://www.securitytube-training.com/online-courses/x8664-assembly-and-shellcoding-on-linux/index.html</a>.</p>
+<p><strong>Student ID</strong>: <code>PA-29059</code><br>
+<strong>GitHub repository</strong>: <a href="https://github.com/andrea-perfetti/SLAE64-Exam">https://github.com/andrea-perfetti/SLAE64-Exam</a></p>
+<p>This assignment has been written on a Kali Linux 2021.1 64-bit virtual machine:</p>
+<pre><code>┌──(kali㉿kali)-[~]
+└─$ uname -a
+Linux kali 5.10.0-kali3-amd64 #1 SMP Debian 5.10.13-1kali1 (2021-02-08) x86_64 GNU/Linux
+</code></pre>
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">TAGGED IN</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="https://andrea-perfetti.github.io/tags/slae64/">SLAE64</a>
+
+                  </div>
+                
+              
+            
+            <div class="post-actions-wrap">
+  
+      <nav style="visibility: hidden">
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://andrea-perfetti.github.io/2021/04/slae64-assignment-7-crypter/" data-tooltip="SLAE64 - Assignment 7 - Crypter">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://andrea-perfetti.github.io/2021/04/slae64-assignment-1-tcp-bind-shell-with-passcode/" data-tooltip="SLAE64 - Assignment 1 - TCP Bind Shell with passcode">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+            
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2021 Andrea Perfetti. All Rights Reserved
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="2">
+        <div class="post-actions-wrap">
+  
+      <nav style="visibility: hidden">
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://andrea-perfetti.github.io/2021/04/slae64-assignment-7-crypter/" data-tooltip="SLAE64 - Assignment 7 - Crypter">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://andrea-perfetti.github.io/2021/04/slae64-assignment-1-tcp-bind-shell-with-passcode/" data-tooltip="SLAE64 - Assignment 1 - TCP Bind Shell with passcode">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="2">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-remove"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg" alt="Author&#39;s picture" />
+    
+    <h4 id="about-card-name">Andrea Perfetti</h4>
+    
+      <div id="about-card-bio">YHQL, YLGL, YLFL.</div>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        IT Security Specialist
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker"></i>
+        <br/>
+        Italy
+      </div>
+    
+  </div>
+</div>
+
+    
+
+    
+  
+    
+      <div id="cover" style="background-image:url('https://andrea-perfetti.github.io/img/wallpa/pexels-elijah-o%27donnell-3473569.jpg');"></div>
+    
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="https://andrea-perfetti.github.io/js/script-pcw6v3xilnxydl1vddzazdverrnn9ctynvnxgwho987mfyqkuylcb1nlt.min.js"></script>
+
+
+<script lang="javascript">
+window.onload = updateMinWidth;
+window.onresize = updateMinWidth;
+document.getElementById("sidebar").addEventListener("transitionend", updateMinWidth);
+function updateMinWidth() {
+  var sidebar = document.getElementById("sidebar");
+  var main = document.getElementById("main");
+  main.style.minWidth = "";
+  var w1 = getComputedStyle(main).getPropertyValue("min-width");
+  var w2 = getComputedStyle(sidebar).getPropertyValue("width");
+  var w3 = getComputedStyle(sidebar).getPropertyValue("left");
+  main.style.minWidth = `calc(${w1} - ${w2} - ${w3})`;
+}
+</script>
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+  
+    
+  
+
+
+
+
+    
+  </body>
+</html>
+

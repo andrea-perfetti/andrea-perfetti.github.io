@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>SLAE Exam Assignments on Andrea Perfetti</title>
+    <link>https://andrea-perfetti.github.io/categories/slae-exam-assignments/</link>
+    <description>Recent content in SLAE Exam Assignments on Andrea Perfetti</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 11 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://andrea-perfetti.github.io/categories/slae-exam-assignments/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>SLAE64 - Assignment 4 - Encoder</title>
+      <link>https://andrea-perfetti.github.io/2021/04/slae64-assignment-4-encoder/</link>
+      <pubDate>Sun, 11 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://andrea-perfetti.github.io/2021/04/slae64-assignment-4-encoder/</guid>
+      <description>&lt;p&gt;The fourth assigment for the SLAE64 certification asks to create a custom encoding scheme like the &amp;ldquo;Insertion Encoder&amp;rdquo; that has been presented in the course. A PoC is also requested, using &lt;em&gt;execve-stack&lt;/em&gt; shellcode.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>SLAE64 - Assignment 7 - Crypter</title>
+      <link>https://andrea-perfetti.github.io/2021/04/slae64-assignment-7-crypter/</link>
+      <pubDate>Sun, 11 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://andrea-perfetti.github.io/2021/04/slae64-assignment-7-crypter/</guid>
+      <description>&lt;p&gt;The seventh assignment for the SLAE64 certification asks to create a custom crypter like the one shown in the &amp;ldquo;Crypters&amp;rdquo; video. You are free to use any existing encryption schema and any programming language.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>SLAE64 - Assignment 6 - Polymorphism</title>
+      <link>https://andrea-perfetti.github.io/2021/04/slae64-assignment-6-polymorphism/</link>
+      <pubDate>Sat, 10 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://andrea-perfetti.github.io/2021/04/slae64-assignment-6-polymorphism/</guid>
+      <description>&lt;p&gt;The sixth assigment for the SLAE64 certification asks to select 3 shellcodes from &lt;a href=&#34;http://shell-storm.org/&#34;&gt;Shell-Storm&lt;/a&gt; and create a polymorphic version of them in order to beat pattern matching.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>SLAE64 - Assignment 1 - TCP Bind Shell with passcode</title>
+      <link>https://andrea-perfetti.github.io/2021/04/slae64-assignment-1-tcp-bind-shell-with-passcode/</link>
+      <pubDate>Mon, 05 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://andrea-perfetti.github.io/2021/04/slae64-assignment-1-tcp-bind-shell-with-passcode/</guid>
+      <description>&lt;p&gt;The first assigment for the SLAE64 certification asks to write a TCP Bind Shell shellcode that listens on a port and then executes a shell after verifying a &amp;ldquo;passcode&amp;rdquo; on successful connection.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>SLAE64 - Assignment 3 - EggHunter</title>
+      <link>https://andrea-perfetti.github.io/2021/04/slae64-assignment-3-egghunter/</link>
+      <pubDate>Mon, 05 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://andrea-perfetti.github.io/2021/04/slae64-assignment-3-egghunter/</guid>
+      <description>&lt;p&gt;The third assigment for the SLAE64 certification asks to study about the &lt;em&gt;EggHunter&lt;/em&gt; shellcode and to create a working demo of it.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>SLAE64 - Assignment 2 - TCP Reverse Shell with passcode</title>
+      <link>https://andrea-perfetti.github.io/2021/04/slae64-assignment-2-tcp-reverse-shell-with-passcode/</link>
+      <pubDate>Sun, 04 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://andrea-perfetti.github.io/2021/04/slae64-assignment-2-tcp-reverse-shell-with-passcode/</guid>
+      <description>&lt;p&gt;The second assigment for the SLAE64 certification asks to write a TCP Reverse Shell shellcode that connects to an address and a port and then executes a shell after verifying a &amp;ldquo;passcode&amp;rdquo; on successful connection.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>SLAE64 - Assignment 5 - Analysis</title>
+      <link>https://andrea-perfetti.github.io/2021/04/slae64-assignment-5-analysis/</link>
+      <pubDate>Sun, 04 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://andrea-perfetti.github.io/2021/04/slae64-assignment-5-analysis/</guid>
+      <description>&lt;p&gt;The fifth assigment for the SLAE64 certification asks to choose 3 shellcode samples created with Msfpayload for linux/x86_64 and dissect them presenting the analysis.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>SLAE32 - Assignment 3 - EggHunter</title>
+      <link>https://andrea-perfetti.github.io/2021/03/slae32-assignment-3-egghunter/</link>
+      <pubDate>Tue, 16 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://andrea-perfetti.github.io/2021/03/slae32-assignment-3-egghunter/</guid>
+      <description>&lt;p&gt;The third assigment for the SLAE32 certification asks to study about the &lt;em&gt;EggHunter&lt;/em&gt; shellcode and to create a working demo of it (the demo should be configurable for different payloads).&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>SLAE32 - Assignment 1 - TCP Bind Shell</title>
+      <link>https://andrea-perfetti.github.io/2021/03/slae32-assignment-1-tcp-bind-shell/</link>
+      <pubDate>Sun, 14 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://andrea-perfetti.github.io/2021/03/slae32-assignment-1-tcp-bind-shell/</guid>
+      <description>&lt;p&gt;The first assigment for the SLAE32 certification asks to write a TCP Bind Shell shellcode that binds to a port and then executes a shell on the incoming connection. Requirement is that port number should be easily configurable.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>SLAE32 - Assignment 2 - TCP Reverse Shell</title>
+      <link>https://andrea-perfetti.github.io/2021/03/slae32-assignment-2-tcp-reverse-shell/</link>
+      <pubDate>Sun, 14 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://andrea-perfetti.github.io/2021/03/slae32-assignment-2-tcp-reverse-shell/</guid>
+      <description>&lt;p&gt;The second assigment for the SLAE32 certification asks to write a TCP Reverse Shell shellcode that connects to an address and a port and then executes a shell on successful connection. Requirement is that IP address and port number should be easily configurable.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>SLAE32 - Assignment 5 - Analysis</title>
+      <link>https://andrea-perfetti.github.io/2021/03/slae32-assignment-5-analysis/</link>
+      <pubDate>Sun, 14 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://andrea-perfetti.github.io/2021/03/slae32-assignment-5-analysis/</guid>
+      <description>&lt;p&gt;The fifth assigment for the SLAE32 certification asks to choose 3 shellcode samples created with Msfpayload for linux/x86 and dissect them presenting the analysis.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>SLAE32 - Assignment 7 - Crypter</title>
+      <link>https://andrea-perfetti.github.io/2021/03/slae32-assignment-7-crypter/</link>
+      <pubDate>Sat, 13 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://andrea-perfetti.github.io/2021/03/slae32-assignment-7-crypter/</guid>
+      <description>&lt;p&gt;The seventh assignment for the SLAE32 certification asks to create a custom crypter like the one shown in the &amp;ldquo;Crypters&amp;rdquo; video. You are free to use any existing encryption schema and any programming language.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>SLAE32 - Assignment 4 - Encoder</title>
+      <link>https://andrea-perfetti.github.io/2021/03/slae32-assignment-4-encoder/</link>
+      <pubDate>Thu, 11 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://andrea-perfetti.github.io/2021/03/slae32-assignment-4-encoder/</guid>
+      <description>&lt;p&gt;The fourth assigment for the SLAE32 certification asks to create a custom encoding scheme like the &amp;ldquo;Insertion Encoder&amp;rdquo; that has been presented in the course.  a PoC is also requested, using &lt;em&gt;execve-stack&lt;/em&gt; shellcode.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>SLAE32 - Assignment 6 - Polymorphism</title>
+      <link>https://andrea-perfetti.github.io/2021/03/slae32-assignment-6-polymorphism/</link>
+      <pubDate>Thu, 11 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://andrea-perfetti.github.io/2021/03/slae32-assignment-6-polymorphism/</guid>
+      <description>&lt;p&gt;The sixth assigment for the SLAE32 certification asks to select 3 shellcodes from &lt;a href=&#34;http://shell-storm.org/&#34;&gt;Shell-Storm&lt;/a&gt; and create a polymorphic version of them in order to beat pattern matching.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

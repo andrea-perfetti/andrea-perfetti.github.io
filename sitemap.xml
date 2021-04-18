@@ -8,73 +8,78 @@
     <loc>https://andrea-perfetti.github.io/categories/</loc>
     <lastmod>2021-04-11T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://andrea-perfetti.github.io/posts/</loc>
+    <loc>https://andrea-perfetti.github.io/post/</loc>
+    <lastmod>2021-04-11T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://andrea-perfetti.github.io/categories/slae-64-bit/</loc>
+    <lastmod>2021-04-11T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://andrea-perfetti.github.io/categories/slae-exam-assignments/</loc>
     <lastmod>2021-04-11T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://andrea-perfetti.github.io/tags/slae64/</loc>
     <lastmod>2021-04-11T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://andrea-perfetti.github.io/posts/slae64-exam/2021-04-11-slae64-assignment-4/</loc>
+    <loc>https://andrea-perfetti.github.io/2021/04/slae64-assignment-4-encoder/</loc>
     <lastmod>2021-04-11T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://andrea-perfetti.github.io/posts/slae64-exam/2021-04-11-slae64-assignment-7/</loc>
-    <lastmod>2021-04-11T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://andrea-perfetti.github.io/categories/slae64-exam-assignments/</loc>
+    <loc>https://andrea-perfetti.github.io/2021/04/slae64-assignment-7-crypter/</loc>
     <lastmod>2021-04-11T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://andrea-perfetti.github.io/tags/</loc>
     <lastmod>2021-04-11T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://andrea-perfetti.github.io/posts/slae64-exam/2021-04-10-slae64-assignment-6/</loc>
+    <loc>https://andrea-perfetti.github.io/2021/04/slae64-assignment-6-polymorphism/</loc>
     <lastmod>2021-04-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://andrea-perfetti.github.io/posts/slae64-exam/2021-04-05-slae64-assignment-1/</loc>
+    <loc>https://andrea-perfetti.github.io/2021/04/slae64-assignment-1-tcp-bind-shell-with-passcode/</loc>
     <lastmod>2021-04-05T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://andrea-perfetti.github.io/posts/slae64-exam/2021-04-05-slae64-assignment-3/</loc>
+    <loc>https://andrea-perfetti.github.io/2021/04/slae64-assignment-3-egghunter/</loc>
     <lastmod>2021-04-05T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://andrea-perfetti.github.io/posts/slae64-exam/2021-04-04-slae64-assignment-2/</loc>
+    <loc>https://andrea-perfetti.github.io/2021/04/slae64-assignment-2-tcp-reverse-shell-with-passcode/</loc>
     <lastmod>2021-04-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://andrea-perfetti.github.io/posts/slae64-exam/2021-04-04-slae64-assignment-5/</loc>
+    <loc>https://andrea-perfetti.github.io/2021/04/slae64-assignment-5-analysis/</loc>
     <lastmod>2021-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://andrea-perfetti.github.io/about/</loc>
     <lastmod>2021-03-28T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>https://andrea-perfetti.github.io/categories/slae-32-bit/</loc>
+    <lastmod>2021-03-16T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>https://andrea-perfetti.github.io/tags/slae32/</loc>
     <lastmod>2021-03-16T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-16-slae32-assignment-3/</loc>
+    <loc>https://andrea-perfetti.github.io/2021/03/slae32-assignment-3-egghunter/</loc>
     <lastmod>2021-03-16T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://andrea-perfetti.github.io/categories/slae32-exam-assignments/</loc>
-    <lastmod>2021-03-16T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-14-slae32-assignment-1/</loc>
+    <loc>https://andrea-perfetti.github.io/2021/03/slae32-assignment-1-tcp-bind-shell/</loc>
     <lastmod>2021-03-14T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-14-slae32-assignment-2/</loc>
+    <loc>https://andrea-perfetti.github.io/2021/03/slae32-assignment-2-tcp-reverse-shell/</loc>
     <lastmod>2021-03-14T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-14-slae32-assignment-5/</loc>
+    <loc>https://andrea-perfetti.github.io/2021/03/slae32-assignment-5-analysis/</loc>
     <lastmod>2021-03-14T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-13-slae32-assignment-7/</loc>
+    <loc>https://andrea-perfetti.github.io/2021/03/slae32-assignment-7-crypter/</loc>
     <lastmod>2021-03-13T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-10-slae32-assignment-4/</loc>
+    <loc>https://andrea-perfetti.github.io/2021/03/slae32-assignment-4-encoder/</loc>
     <lastmod>2021-03-11T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-07-slae32-assignment-6/</loc>
+    <loc>https://andrea-perfetti.github.io/2021/03/slae32-assignment-6-polymorphism/</loc>
     <lastmod>2021-03-11T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://andrea-perfetti.github.io/tags/hello/</loc>
     <lastmod>2021-03-06T10:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://andrea-perfetti.github.io/posts/2021-03-06-hello-world/</loc>
+    <loc>https://andrea-perfetti.github.io/2021/03/hello-world/</loc>
     <lastmod>2021-03-06T10:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://andrea-perfetti.github.io/archives/</loc>
   </url>
 </urlset>

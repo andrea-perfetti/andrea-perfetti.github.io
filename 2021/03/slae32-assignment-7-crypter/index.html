@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.82.0 with theme Tranquilpeak 0.4.8-BETA">
+<meta name="author" content="Andrea Perfetti">
+<meta name="keywords" content="Assembly, Encrypter, Fernet">
+<meta name="description" content="The seventh assignment for the SLAE32 certification asks to create a custom crypter like the one shown in the &ldquo;Crypters&rdquo; video. You are free to use any existing encryption schema and any programming language.">
+
+
+<meta property="og:description" content="The seventh assignment for the SLAE32 certification asks to create a custom crypter like the one shown in the &ldquo;Crypters&rdquo; video. You are free to use any existing encryption schema and any programming language.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SLAE32 - Assignment 7 - Crypter">
+<meta name="twitter:title" content="SLAE32 - Assignment 7 - Crypter">
+<meta property="og:url" content="https://andrea-perfetti.github.io/2021/03/slae32-assignment-7-crypter/">
+<meta property="twitter:url" content="https://andrea-perfetti.github.io/2021/03/slae32-assignment-7-crypter/">
+<meta property="og:site_name" content="Andrea Perfetti">
+<meta property="og:description" content="The seventh assignment for the SLAE32 certification asks to create a custom crypter like the one shown in the &ldquo;Crypters&rdquo; video. You are free to use any existing encryption schema and any programming language.">
+<meta name="twitter:description" content="The seventh assignment for the SLAE32 certification asks to create a custom crypter like the one shown in the &ldquo;Crypters&rdquo; video. You are free to use any existing encryption schema and any programming language.">
+<meta property="og:locale" content="en-us">
+
+  
+    <meta property="article:published_time" content="2021-03-13T00:00:00">
+  
+  
+    <meta property="article:modified_time" content="2021-03-13T00:00:00">
+  
+  
+  
+    
+      <meta property="article:section" content="SLAE Exam Assignments">
+    
+      <meta property="article:section" content="SLAE 32-bit">
+    
+  
+  
+    
+      <meta property="article:tag" content="SLAE32">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+
+
+  <meta property="og:image" content="https://andrea-perfetti.github.io/img/slae/0_slae32_badge.png">
+  <meta property="twitter:image" content="https://andrea-perfetti.github.io/img/slae/0_slae32_badge.png">
+
+
+
+
+
+  <meta property="og:image" content="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg">
+  <meta property="twitter:image" content="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg">
+
+
+    <title>SLAE32 - Assignment 7 - Crypter</title>
+
+    <link rel="icon" href="https://andrea-perfetti.github.io/favicon.png">
+    
+
+    
+
+    <link rel="canonical" href="https://andrea-perfetti.github.io/2021/03/slae32-assignment-7-crypter/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="https://andrea-perfetti.github.io/css/style-twzjdbqhmnnacqs0pwwdzcdbt8yhv8giawvjqjmyfoqnvazl0dalmnhdkvp7.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="2">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="https://andrea-perfetti.github.io/">Andrea Perfetti</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="https://andrea-perfetti.github.io/#about">
+    
+    
+    
+      
+        <img class="header-picture" src="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg" alt="Author&#39;s picture" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="2">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="https://andrea-perfetti.github.io/#about">
+          <img class="sidebar-profile-picture" src="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg" alt="Author&#39;s picture" />
+        </a>
+        <h4 class="sidebar-profile-name">Andrea Perfetti</h4>
+        
+          <h5 class="sidebar-profile-bio">YHQL, YLGL, YLFL.</h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+      
+      <span class="sidebar-button-desc">Home</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/categories">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+      
+      <span class="sidebar-button-desc">Categories</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/tags">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+      
+      <span class="sidebar-button-desc">Tags</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/archives">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+      
+      <span class="sidebar-button-desc">Archives</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/about/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+      
+      <span class="sidebar-button-desc">About</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/andrea-perfetti" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/index.xml">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="2"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      SLAE32 - Assignment 7 - Crypter
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2021-03-13T00:00:00Z">
+        
+  
+  
+  
+  
+    2021-03-13
+  
+
+      </time>
+    
+    
+  
+  
+    <span>in</span>
+    
+      <a class="category-link" href="https://andrea-perfetti.github.io/categories/slae-exam-assignments">SLAE Exam Assignments</a>, 
+    
+      <a class="category-link" href="https://andrea-perfetti.github.io/categories/slae-32-bit">SLAE 32-bit</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              <p>The seventh assignment for the SLAE32 certification asks to create a custom crypter like the one shown in the &ldquo;Crypters&rdquo; video. You are free to use any existing encryption schema and any programming language.</p>
+<p>I have decided to use Python3 and - after some research - to give <a href="https://cryptography.io/en/latest/fernet.html">Fernet</a> a try.</p>
+<p>According to the documentation (&quot;<a href="https://cryptography.io/en/latest/fernet.html#limitations">Limitations</a>&quot; section):</p>
+<blockquote>
+<p>Fernet is ideal for encrypting data that easily fits in memory. As a design feature it does not expose unauthenticated bytes. This means that the complete message contents must be available in memory, making Fernet generally unsuitable for very large files at this time.</p>
+</blockquote>
+<p>As we will use Fernet to encrypt shellcodes, this limitation is not a <em>show-stopper</em> at all.</p>
+<h2 id="encrypter">Encrypter</h2>
+<p>The encrypter tool:</p>
+<ul>
+<li>takes the shellcode to be encrypted from the <em>shellcode</em> variable</li>
+<li>creates a salt taking 16 random characters from digits and ascii_uppercase</li>
+<li>asks the user for the encryption password</li>
+<li>performs the encryption process</li>
+<li>prints on screen the different components:
+<ul>
+<li>chosen password in plaintext</li>
+<li>random salt computed</li>
+<li>encrypted payload, which is a string obtained by concatenating:
+<ul>
+<li>the random salt</li>
+<li>the shellcode encrypted with Fernet</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>The <em>encrypted payload</em> must be copied into the Decrypt-Exec utility.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> string
+<span style="color:#f92672">import</span> random
+
+<span style="color:#f92672">import</span> base64
+<span style="color:#f92672">from</span> cryptography.fernet <span style="color:#f92672">import</span> Fernet
+<span style="color:#f92672">from</span> cryptography.hazmat.primitives <span style="color:#f92672">import</span> hashes
+<span style="color:#f92672">from</span> cryptography.hazmat.primitives.kdf.pbkdf2 <span style="color:#f92672">import</span> PBKDF2HMAC
+
+
+<span style="color:#75715e"># Update here the shellcode to be encrypted</span>
+shellcode <span style="color:#f92672">=</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;&lt;INSERT-HERE-SHELLCODE&gt;&#34;</span>
+
+salt <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;</span><span style="color:#f92672">.</span>join(random<span style="color:#f92672">.</span>choice(string<span style="color:#f92672">.</span>ascii_uppercase <span style="color:#f92672">+</span> string<span style="color:#f92672">.</span>digits) <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">16</span>))
+
+plain_pwd <span style="color:#f92672">=</span> input(<span style="color:#e6db74">&#34;Enter the password: &#34;</span>)
+
+kdf <span style="color:#f92672">=</span> PBKDF2HMAC(
+	algorithm <span style="color:#f92672">=</span> hashes<span style="color:#f92672">.</span>SHA256(),
+	length <span style="color:#f92672">=</span> <span style="color:#ae81ff">32</span>,
+	salt <span style="color:#f92672">=</span> salt<span style="color:#f92672">.</span>encode(),
+	iterations <span style="color:#f92672">=</span> <span style="color:#ae81ff">1000</span>,
+)
+key <span style="color:#f92672">=</span> base64<span style="color:#f92672">.</span>urlsafe_b64encode(kdf<span style="color:#f92672">.</span>derive(plain_pwd<span style="color:#f92672">.</span>encode()))
+
+cipher_suite <span style="color:#f92672">=</span> Fernet(key)
+cipher_text <span style="color:#f92672">=</span> cipher_suite<span style="color:#f92672">.</span>encrypt(shellcode)
+
+encrypted_payload <span style="color:#f92672">=</span> salt<span style="color:#f92672">.</span>encode() <span style="color:#f92672">+</span> cipher_text
+
+<span style="color:#66d9ef">print</span> (<span style="color:#e6db74">&#34;--------------------------------------------------------&#34;</span>)
+<span style="color:#66d9ef">print</span> (<span style="color:#e6db74">&#34;Chosen password: &#34;</span>, plain_pwd)
+<span style="color:#66d9ef">print</span> (<span style="color:#e6db74">&#34;&#34;</span>)
+<span style="color:#66d9ef">print</span> (<span style="color:#e6db74">&#34;--------------------------------------------------------&#34;</span>)
+<span style="color:#66d9ef">print</span> (<span style="color:#e6db74">&#34;Random salt: &#34;</span>, salt)
+<span style="color:#66d9ef">print</span> (<span style="color:#e6db74">&#34;&#34;</span>)
+<span style="color:#66d9ef">print</span> (<span style="color:#e6db74">&#34;--------------------------------------------------------&#34;</span>)
+<span style="color:#66d9ef">print</span> (<span style="color:#e6db74">&#34;Encrypted payload: &#34;</span>)
+<span style="color:#66d9ef">print</span> (<span style="color:#e6db74">&#34;&#34;</span>)
+<span style="color:#66d9ef">print</span> (encrypted_payload)
+<span style="color:#66d9ef">print</span> (<span style="color:#e6db74">&#34;&#34;</span>)
+<span style="color:#66d9ef">print</span> (<span style="color:#e6db74">&#34;--------------------------------------------------------&#34;</span>)
+</code></pre></div><h2 id="decrypter">Decrypter</h2>
+<p>The decryption-exec tool:</p>
+<ul>
+<li>takes the encrypted string generated with previous tool from the <em>encrypted_payload</em> variable and then splits it into the two different components:
+<ul>
+<li>the salt (first 16 characters)</li>
+<li>the cipher_text (other characters)</li>
+</ul>
+</li>
+<li>asks the user for the password (which has to be the same used for the encryption, of course)</li>
+<li>builds the <em>key derivation function</em> using the salt, with same algorithm used in the encryption</li>
+<li>performs the decryption, thus having the original shellcode into <em>shellcode_data</em> variable</li>
+<li>puts the shellcode in memory and cast it to <em>invoke_shellcode</em> function</li>
+<li>sets the memory pages to executable</li>
+<li>executes the shellcode</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> string
+<span style="color:#f92672">import</span> base64
+
+<span style="color:#f92672">from</span> cryptography.fernet <span style="color:#f92672">import</span> Fernet
+<span style="color:#f92672">from</span> cryptography.hazmat.primitives <span style="color:#f92672">import</span> hashes
+<span style="color:#f92672">from</span> cryptography.hazmat.primitives.kdf.pbkdf2 <span style="color:#f92672">import</span> PBKDF2HMAC
+<span style="color:#f92672">from</span> ctypes <span style="color:#f92672">import</span> <span style="color:#f92672">*</span>
+
+
+<span style="color:#75715e"># Update here the shellcode to be decrypted</span>
+encrypted_payload <span style="color:#f92672">=</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;&lt;INSERT-HERE-ENCRYPTED-SHELLCODE&gt;&#34;</span>
+
+
+salt <span style="color:#f92672">=</span> encrypted_payload[:<span style="color:#ae81ff">16</span>]
+cipher_text <span style="color:#f92672">=</span> encrypted_payload[<span style="color:#ae81ff">16</span>:]
+
+plain_pwd <span style="color:#f92672">=</span> input(<span style="color:#e6db74">&#34;Enter the password: &#34;</span>)
+
+kdf <span style="color:#f92672">=</span> PBKDF2HMAC(
+	algorithm <span style="color:#f92672">=</span> hashes<span style="color:#f92672">.</span>SHA256(),
+	length <span style="color:#f92672">=</span> <span style="color:#ae81ff">32</span>,
+	salt <span style="color:#f92672">=</span> salt,
+	iterations <span style="color:#f92672">=</span> <span style="color:#ae81ff">1000</span>,
+)
+key <span style="color:#f92672">=</span> base64<span style="color:#f92672">.</span>urlsafe_b64encode(kdf<span style="color:#f92672">.</span>derive(plain_pwd<span style="color:#f92672">.</span>encode()))
+
+cipher_suite <span style="color:#f92672">=</span> Fernet(key)
+shellcode_data <span style="color:#f92672">=</span> cipher_suite<span style="color:#f92672">.</span>decrypt(cipher_text)
+
+
+shellcode<span style="color:#f92672">=</span>create_string_buffer(shellcode_data)
+invoke_shellcode <span style="color:#f92672">=</span> cast(shellcode, CFUNCTYPE(None))
+
+libc <span style="color:#f92672">=</span> CDLL(<span style="color:#e6db74">&#39;libc.so.6&#39;</span>)
+pagesize <span style="color:#f92672">=</span> libc<span style="color:#f92672">.</span>getpagesize()
+address <span style="color:#f92672">=</span> cast(invoke_shellcode, c_void_p)<span style="color:#f92672">.</span>value
+address_page <span style="color:#f92672">=</span> (address <span style="color:#f92672">//</span> pagesize) <span style="color:#f92672">*</span> pagesize
+
+<span style="color:#66d9ef">for</span> page_start <span style="color:#f92672">in</span> range(address_page, address<span style="color:#f92672">+</span>len(shellcode_data), pagesize):
+	<span style="color:#66d9ef">assert</span> libc<span style="color:#f92672">.</span>mprotect(page_start, pagesize, <span style="color:#ae81ff">0x7</span>) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>
+invoke_shellcode()
+</code></pre></div><h2 id="proof-of-concept">Proof of Concept</h2>
+<p>All Proof of Concept files are stored in the &ldquo;PoC&rdquo; subdirectory under &ldquo;Assignment-7&rdquo;.</p>
+<p>I have created <code>hello.nasm</code> to test the encrypt-decrypt-execute process. Its purpose is to print on screen the string &ldquo;Hello, World!&rdquo; (pointer to memory address is gathered via JMP-CALL-POP technique) and then perform a <code>exit(12)</code>.</p>
+<pre><code>global _start
+
+section .text
+
+_start:
+	jmp short set_to_stack
+
+execute:
+	pop ecx
+	
+	xor eax, eax
+	mov ebx, eax
+	mov edx, eax
+
+	mov al, 0x4
+	mov bl, 0x1
+	mov dl, 0xd
+
+	int 0x80
+
+	mov al, 0x1
+	mov bl, 0xc
+	int 0x80
+
+set_to_stack:
+	call execute
+	db &quot;Hello, World!&quot;
+</code></pre><p>The shellcode has been compiled using <code>compile.sh</code>, the following screenshot shows a sample run of the compiled file:
+<img src="https://andrea-perfetti.github.io/img/slae/slae7-01.png" alt="Running the raw payload"></p>
+<p>Shellcode has been extracted with <code>getShellcode.sh</code> and the inserted in the <em>shellcode</em> variable in <code>Encrypt-Hello.py</code>.<br>
+Running it, the details of encrypted payload are printed on the screen:
+<img src="https://andrea-perfetti.github.io/img/slae/slae7-02.png" alt="Running the encrypter"></p>
+<p>The encrypted payload is then put into <em>encrypted_payload</em> variable in <code>Decrypt-Exec-Hello.py</code> and it is then executed. User is asked for the password and, if correct, the decrypted shellcode is executed:
+<img src="https://andrea-perfetti.github.io/img/slae/slae7-03.png" alt="Running the Decrypt-Exec tool"></p>
+<p>As an additional step, I wondered if the Decrypt-Exec Python tool can be converted into an ELF file and eventually moved to the <em>target</em> machine during offensive operations. Google came in help, pointing me to the <a href="https://www.pyinstaller.org/">PyInstaller</a> bundler utility.<br>
+Using the &ndash;onefile argument, I have been able to create a single ELF file from my Python tool:</p>
+<pre><code>/home/kali/.local/bin/pyinstaller --onefile ./Decrypt-Exec-Hello.py
+</code></pre><p>Here is the result of the execution:
+<img src="https://andrea-perfetti.github.io/img/slae/slae7-04.png" alt="Encoding example"></p>
+<h2 id="possible-evolutions">Possible evolutions</h2>
+<p>Future evolution of the utility is to remove the salt from the beginning of the encrypted string, not to leave any kind of hint on the decryption keys in the decryption tool and thus making any bruteforce attempt way more time-consuming.
+The salt will be then asked to the user launching the decryption tool, along with the password.</p>
+<!-- raw HTML omitted -->
+<hr>
+<p>This blog post has been created for completing the requirements of the SecurityTube Linux Assembly Expert certification: <a href="http://securitytube-training.com/online-courses/securitytube-linux-assembly-expert/">http://securitytube-training.com/online-courses/securitytube-linux-assembly-expert/</a>.</p>
+<p><strong>Student ID</strong>: <code>SLAE - 1547</code><br>
+<strong>GitHub repository</strong>: <a href="https://github.com/andrea-perfetti/SLAE32-Exam">https://github.com/andrea-perfetti/SLAE32-Exam</a></p>
+<p>This assignment has been written on a Kali Linux 2021.1 x86 virtual machine:</p>
+<pre><code>┌──(kali㉿kali)-[~]
+└─$ uname -a 
+Linux kali 5.10.0-kali3-686-pae #1 SMP Debian 5.10.13-1kali1 (2021-02-08) i686 GNU/Linux
+</code></pre>
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">TAGGED IN</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="https://andrea-perfetti.github.io/tags/slae32/">SLAE32</a>
+
+                  </div>
+                
+              
+            
+            <div class="post-actions-wrap">
+  
+      <nav style="visibility: hidden">
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://andrea-perfetti.github.io/2021/03/slae32-assignment-5-analysis/" data-tooltip="SLAE32 - Assignment 5 - Analysis">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://andrea-perfetti.github.io/2021/03/slae32-assignment-4-encoder/" data-tooltip="SLAE32 - Assignment 4 - Encoder">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+            
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2021 Andrea Perfetti. All Rights Reserved
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="2">
+        <div class="post-actions-wrap">
+  
+      <nav style="visibility: hidden">
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://andrea-perfetti.github.io/2021/03/slae32-assignment-5-analysis/" data-tooltip="SLAE32 - Assignment 5 - Analysis">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://andrea-perfetti.github.io/2021/03/slae32-assignment-4-encoder/" data-tooltip="SLAE32 - Assignment 4 - Encoder">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="2">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-remove"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg" alt="Author&#39;s picture" />
+    
+    <h4 id="about-card-name">Andrea Perfetti</h4>
+    
+      <div id="about-card-bio">YHQL, YLGL, YLFL.</div>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        IT Security Specialist
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker"></i>
+        <br/>
+        Italy
+      </div>
+    
+  </div>
+</div>
+
+    
+
+    
+  
+    
+      <div id="cover" style="background-image:url('https://andrea-perfetti.github.io/img/wallpa/pexels-elijah-o%27donnell-3473569.jpg');"></div>
+    
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="https://andrea-perfetti.github.io/js/script-pcw6v3xilnxydl1vddzazdverrnn9ctynvnxgwho987mfyqkuylcb1nlt.min.js"></script>
+
+
+<script lang="javascript">
+window.onload = updateMinWidth;
+window.onresize = updateMinWidth;
+document.getElementById("sidebar").addEventListener("transitionend", updateMinWidth);
+function updateMinWidth() {
+  var sidebar = document.getElementById("sidebar");
+  var main = document.getElementById("main");
+  main.style.minWidth = "";
+  var w1 = getComputedStyle(main).getPropertyValue("min-width");
+  var w2 = getComputedStyle(sidebar).getPropertyValue("width");
+  var w3 = getComputedStyle(sidebar).getPropertyValue("left");
+  main.style.minWidth = `calc(${w1} - ${w2} - ${w3})`;
+}
+</script>
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+  
+    
+  
+
+
+
+
+    
+  </body>
+</html>
+

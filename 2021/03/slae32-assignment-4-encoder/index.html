@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.82.0 with theme Tranquilpeak 0.4.8-BETA">
+<meta name="author" content="Andrea Perfetti">
+<meta name="keywords" content="Assembly, Encoder">
+<meta name="description" content="The fourth assigment for the SLAE32 certification asks to create a custom encoding scheme like the &ldquo;Insertion Encoder&rdquo; that has been presented in the course.  a PoC is also requested, using execve-stack shellcode.">
+
+
+<meta property="og:description" content="The fourth assigment for the SLAE32 certification asks to create a custom encoding scheme like the &ldquo;Insertion Encoder&rdquo; that has been presented in the course.  a PoC is also requested, using execve-stack shellcode.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SLAE32 - Assignment 4 - Encoder">
+<meta name="twitter:title" content="SLAE32 - Assignment 4 - Encoder">
+<meta property="og:url" content="https://andrea-perfetti.github.io/2021/03/slae32-assignment-4-encoder/">
+<meta property="twitter:url" content="https://andrea-perfetti.github.io/2021/03/slae32-assignment-4-encoder/">
+<meta property="og:site_name" content="Andrea Perfetti">
+<meta property="og:description" content="The fourth assigment for the SLAE32 certification asks to create a custom encoding scheme like the &ldquo;Insertion Encoder&rdquo; that has been presented in the course.  a PoC is also requested, using execve-stack shellcode.">
+<meta name="twitter:description" content="The fourth assigment for the SLAE32 certification asks to create a custom encoding scheme like the &ldquo;Insertion Encoder&rdquo; that has been presented in the course.  a PoC is also requested, using execve-stack shellcode.">
+<meta property="og:locale" content="en-us">
+
+  
+    <meta property="article:published_time" content="2021-03-11T00:00:00">
+  
+  
+    <meta property="article:modified_time" content="2021-03-11T00:00:00">
+  
+  
+  
+    
+      <meta property="article:section" content="SLAE Exam Assignments">
+    
+      <meta property="article:section" content="SLAE 32-bit">
+    
+  
+  
+    
+      <meta property="article:tag" content="SLAE32">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+
+
+  <meta property="og:image" content="https://andrea-perfetti.github.io/img/slae/0_slae32_badge.png">
+  <meta property="twitter:image" content="https://andrea-perfetti.github.io/img/slae/0_slae32_badge.png">
+
+
+
+
+
+  <meta property="og:image" content="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg">
+  <meta property="twitter:image" content="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg">
+
+
+    <title>SLAE32 - Assignment 4 - Encoder</title>
+
+    <link rel="icon" href="https://andrea-perfetti.github.io/favicon.png">
+    
+
+    
+
+    <link rel="canonical" href="https://andrea-perfetti.github.io/2021/03/slae32-assignment-4-encoder/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="https://andrea-perfetti.github.io/css/style-twzjdbqhmnnacqs0pwwdzcdbt8yhv8giawvjqjmyfoqnvazl0dalmnhdkvp7.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="2">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="https://andrea-perfetti.github.io/">Andrea Perfetti</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="https://andrea-perfetti.github.io/#about">
+    
+    
+    
+      
+        <img class="header-picture" src="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg" alt="Author&#39;s picture" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="2">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="https://andrea-perfetti.github.io/#about">
+          <img class="sidebar-profile-picture" src="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg" alt="Author&#39;s picture" />
+        </a>
+        <h4 class="sidebar-profile-name">Andrea Perfetti</h4>
+        
+          <h5 class="sidebar-profile-bio">YHQL, YLGL, YLFL.</h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+      
+      <span class="sidebar-button-desc">Home</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/categories">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+      
+      <span class="sidebar-button-desc">Categories</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/tags">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+      
+      <span class="sidebar-button-desc">Tags</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/archives">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+      
+      <span class="sidebar-button-desc">Archives</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/about/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+      
+      <span class="sidebar-button-desc">About</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/andrea-perfetti" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/index.xml">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="2"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      SLAE32 - Assignment 4 - Encoder
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2021-03-11T00:00:00Z">
+        
+  
+  
+  
+  
+    2021-03-11
+  
+
+      </time>
+    
+    
+  
+  
+    <span>in</span>
+    
+      <a class="category-link" href="https://andrea-perfetti.github.io/categories/slae-exam-assignments">SLAE Exam Assignments</a>, 
+    
+      <a class="category-link" href="https://andrea-perfetti.github.io/categories/slae-32-bit">SLAE 32-bit</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              <p>The fourth assigment for the SLAE32 certification asks to create a custom encoding scheme like the &ldquo;Insertion Encoder&rdquo; that has been presented in the course.  a PoC is also requested, using <em>execve-stack</em> shellcode.</p>
+<h2 id="the-encoding-schema">The encoding schema</h2>
+<p>I have decided to go for a variation of the Insertion Encoder, adding some randomness.
+After each byte of the shellcode, I add a byte which could range from 0x1 to 0x4 and states how many <em>garbage</em> bytes will follow. After last byte of the shellcode, <code>\xFF</code> is being added as a terminator marker.</p>
+<p>In the image below, a simple visualization of the encoding schema is presented:
+<img src="https://andrea-perfetti.github.io/img/slae/slae4-01.png" alt="Encoding example"></p>
+<h2 id="the-encoder">The encoder</h2>
+<p>The encoding utility has been written in Python3. Its goal is to add the garbage bytes (0xAB) producing an output that can be then copied into the Decoder-Skeleton file.</p>
+<p>The original shellcode has to be inserted in the <code>shellcode</code> variable. The script the cycles through each byte of the shellcode adding the &lsquo;garbage counter&rsquo; variable (random between 1 and 4) and the garbage bytes according to the counter. After the last byte of the shellcode, &lsquo;0xFF&rsquo; is inserted as a terminator placeholder instead of the <em>garbage counter</em>.</p>
+<p>After this process, the script is printing on the screen the original shellcode and the encoded version.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Python" data-lang="Python"><span style="color:#f92672">import</span> random
+
+<span style="color:#75715e"># Update here the shellcode to be encoded</span>
+shellcode <span style="color:#f92672">=</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\x31\xc0\x89\xc3\xb0\x01\xb3\x0C\xcd\x80</span><span style="color:#e6db74">&#34;</span>
+
+separator <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;0xAB,&#39;</span>
+terminator <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;0xFF&#39;</span>
+notencoded <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;</span>
+encoded <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;</span>
+
+<span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">0</span>,len(shellcode) <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>):
+	notencoded <span style="color:#f92672">+=</span> hex(shellcode[i])
+	encoded <span style="color:#f92672">+=</span> hex(shellcode[i]) <span style="color:#f92672">+</span><span style="color:#e6db74">&#39;,&#39;</span> 
+	separNum <span style="color:#f92672">=</span> random<span style="color:#f92672">.</span>randint(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">4</span>)
+	encoded <span style="color:#f92672">+=</span> hex(separNum) <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;,&#39;</span>
+	encoded <span style="color:#f92672">+=</span> separator <span style="color:#f92672">*</span> separNum
+
+encoded <span style="color:#f92672">+=</span> hex(shellcode[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]) <span style="color:#f92672">+</span><span style="color:#e6db74">&#39;,&#39;</span> <span style="color:#f92672">+</span> terminator
+
+<span style="color:#66d9ef">print</span> (<span style="color:#e6db74">&#34;--------------------------------------------------&#34;</span>)
+<span style="color:#66d9ef">print</span> (<span style="color:#e6db74">&#34;Shellcode encoding utility&#34;</span>)
+<span style="color:#66d9ef">print</span> (<span style="color:#e6db74">&#34;--------------------------------------------------&#34;</span>)
+<span style="color:#66d9ef">print</span> (<span style="color:#e6db74">&#34;Original Shellcode:&#34;</span>)
+<span style="color:#66d9ef">print</span> (notencoded)
+<span style="color:#66d9ef">print</span> (<span style="color:#e6db74">&#34;--------------------------------------------------&#34;</span>)
+<span style="color:#66d9ef">print</span> (<span style="color:#e6db74">&#34;Encoded version:&#34;</span>)
+<span style="color:#66d9ef">print</span> (encoded)
+<span style="color:#66d9ef">print</span> (<span style="color:#e6db74">&#34;--------------------------------------------------&#34;</span>)
+</code></pre></div><h2 id="the-decoder-skeleton">The decoder skeleton</h2>
+<p>The decoding skeleton adopts the JMP-CALL-POP technique to get the address of the actual payload in memory.</p>
+<p>The registers are being used according to the following schema:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Register</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">ESI</td>
+<td>Used to store the start address of the string in memory</td>
+</tr>
+<tr>
+<td style="text-align:center">EAX</td>
+<td>Used (only AL) to load the &lsquo;garbage counter&rsquo; bytes</td>
+</tr>
+<tr>
+<td style="text-align:center">EBX</td>
+<td>Offset of the byte being scanned and handled</td>
+</tr>
+<tr>
+<td style="text-align:center">ECX</td>
+<td>Offset to the byte being rewritten in memory with the <em>actual</em> shellcode</td>
+</tr>
+<tr>
+<td style="text-align:center">EDX</td>
+<td>Used (only DL) to load actual shellcode byte to be then rewritten in memory</td>
+</tr>
+</tbody>
+</table>
+<p>After the JMP-CALL-POP, EAX to EDX are zeroed and then the loop starts:</p>
+<ul>
+<li>The first shellcode byte is legitimate, therefore EBX and ECX are incremented to start scanning through the string in memory;</li>
+<li><em>Garbage counter</em> byte is loaded into AL and compared with \xFF. If equal, it means that we have reached the end of the encoded shellcode and the code jumps to the &ldquo;Execute&rdquo; label;</li>
+<li>EBX is incremented to skip the <em>garbage counter</em> byte which we have already copied in AL;</li>
+<li>AL (number of next garbage bytes) is added to EBX to skip the garbage bytes themselves;</li>
+<li>Next actual shellcode byte (at offset EBX) is copied into DL;</li>
+<li>Content of DL (actual shellcode byte) is copied at offset ECX</li>
+</ul>
+<p>After the loop exits, the &ldquo;Execute&rdquo; section adds a final \x00 to the actual shellcode in memory and then performs a jump to the shellcode address (stored in ESI).</p>
+<pre><code>global _start			
+
+section .text
+
+_start:
+	jmp short ShellcodeIntoStack
+
+Decode:	
+	pop esi
+
+	xor eax, eax
+	xor ebx, ebx
+	xor ecx, ecx
+	xor edx, edx
+
+Loop:	
+	inc ebx
+	inc ecx
+	
+	mov byte al, [esi + ebx]
+	cmp eax, 0xFF
+	je Execute
+
+	inc ebx
+	add ebx, eax
+
+	mov BYTE dl, [esi + ebx]
+	mov BYTE [esi + ecx], dl
+
+	jmp short Loop
+	
+Execute:
+	xor edx, edx
+	mov [esi + ecx], dl
+	jmp esi  		;Leave control to decoded shellcode
+
+ShellcodeIntoStack:
+	call Decode
+	Shellcode: db &lt;INSERT-HERE-THE-SHELLCODE&gt;
+</code></pre><h3 id="compiling">Compiling</h3>
+<p>The .text section is being rewritten while executing the decoder, therefore we must compile with appropriate flags. For this reason, a patched version of <code>compile.sh</code> has been prepared:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#!/bin/bash
+</span><span style="color:#75715e"></span>
+echo <span style="color:#e6db74">&#39;[+] Assembling with Nasm ... &#39;</span>
+nasm -f elf32 -o $1.o $1.nasm
+
+echo <span style="color:#e6db74">&#39;[+] Linking ...&#39;</span>
+ld -N -o $1 $1.o
+rm $1.o
+
+echo <span style="color:#e6db74">&#39;[+] Done!&#39;</span>
+</code></pre></div><p>According to the <a href="https://linux.die.net/man/1/ld">man page of ld</a>, <code>-N</code> option &ldquo;Set the text and data sections to be readable and writable. Also, do not page-align the data segment, and disable linking against shared libraries.&rdquo;</p>
+<h2 id="proof-of-concept">Proof of Concept</h2>
+<p>All Proof of Concept files are stored in the &ldquo;Encoded-Shellcodes&rdquo; subdirectory under &ldquo;Assignment-4&rdquo;.<br>
+I have tested two different Execve-Stack shellcodes, taken from the SLAE32 course material.</p>
+<p>For each of them the process has been the following:</p>
+<ul>
+<li>Creation of .nasm file starting from Course materials</li>
+<li>Compile the file with <code>compile.sh</code> tool (available on the GitHub repository)</li>
+<li>Extract the shellcode with <code>getShellcode.sh</code> tool (it automates extraction with <em>objdump</em> and subsequent string manipulations)</li>
+<li>Creation of appropriate <code>Encoder-&lt;NAME&gt;.py</code> adding the shellcode extracted at previous step; output of the file is redirected to <code>EncoderOutput-&lt;NAME&gt;.txt</code></li>
+<li><code>Decoder-&lt;NAME&gt;.nasm</code> file is created forking Decoder-Skeleton and adding the encoded shellcode; the file is then compiled using <code>compileExec.sh</code> and tested</li>
+</ul>
+<h3 id="execve-stack-sh">Execve-Stack-SH</h3>
+<p><code>Execve-Stack-SH</code> pushes onto the stack the command <code>//bin/sh</code> (additional / for padding purposes) and then executes it.<br>
+<img src="https://andrea-perfetti.github.io/img/slae/slae4-poc-sh.png" alt="Execve-Stack-SH PoC"></p>
+<h3 id="execve-stack-ls">Execve-Stack-LS</h3>
+<p><code>Execve-Stack-LS</code> pushes onto the stack the command <code>//bin/ls</code> (additional / for padding purposes) and then executes it.<br>
+<img src="https://andrea-perfetti.github.io/img/slae/slae4-poc-ls.png" alt="Execve-Stack-LS PoC"></p>
+<!-- raw HTML omitted -->
+<hr>
+<p>This blog post has been created for completing the requirements of the SecurityTube Linux Assembly Expert certification: <a href="http://securitytube-training.com/online-courses/securitytube-linux-assembly-expert/">http://securitytube-training.com/online-courses/securitytube-linux-assembly-expert/</a>.</p>
+<p><strong>Student ID</strong>: <code>SLAE - 1547</code><br>
+<strong>GitHub repository</strong>: <a href="https://github.com/andrea-perfetti/SLAE32-Exam">https://github.com/andrea-perfetti/SLAE32-Exam</a></p>
+<p>This assignment has been written on a Kali Linux 2021.1 x86 virtual machine:</p>
+<pre><code>┌──(kali㉿kali)-[~]
+└─$ uname -a 
+Linux kali 5.10.0-kali3-686-pae #1 SMP Debian 5.10.13-1kali1 (2021-02-08) i686 GNU/Linux
+</code></pre>
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">TAGGED IN</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="https://andrea-perfetti.github.io/tags/slae32/">SLAE32</a>
+
+                  </div>
+                
+              
+            
+            <div class="post-actions-wrap">
+  
+      <nav style="visibility: hidden">
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://andrea-perfetti.github.io/2021/03/slae32-assignment-7-crypter/" data-tooltip="SLAE32 - Assignment 7 - Crypter">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://andrea-perfetti.github.io/2021/03/slae32-assignment-6-polymorphism/" data-tooltip="SLAE32 - Assignment 6 - Polymorphism">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+            
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2021 Andrea Perfetti. All Rights Reserved
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="2">
+        <div class="post-actions-wrap">
+  
+      <nav style="visibility: hidden">
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://andrea-perfetti.github.io/2021/03/slae32-assignment-7-crypter/" data-tooltip="SLAE32 - Assignment 7 - Crypter">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://andrea-perfetti.github.io/2021/03/slae32-assignment-6-polymorphism/" data-tooltip="SLAE32 - Assignment 6 - Polymorphism">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="2">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-remove"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg" alt="Author&#39;s picture" />
+    
+    <h4 id="about-card-name">Andrea Perfetti</h4>
+    
+      <div id="about-card-bio">YHQL, YLGL, YLFL.</div>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        IT Security Specialist
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker"></i>
+        <br/>
+        Italy
+      </div>
+    
+  </div>
+</div>
+
+    
+
+    
+  
+    
+      <div id="cover" style="background-image:url('https://andrea-perfetti.github.io/img/wallpa/pexels-elijah-o%27donnell-3473569.jpg');"></div>
+    
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="https://andrea-perfetti.github.io/js/script-pcw6v3xilnxydl1vddzazdverrnn9ctynvnxgwho987mfyqkuylcb1nlt.min.js"></script>
+
+
+<script lang="javascript">
+window.onload = updateMinWidth;
+window.onresize = updateMinWidth;
+document.getElementById("sidebar").addEventListener("transitionend", updateMinWidth);
+function updateMinWidth() {
+  var sidebar = document.getElementById("sidebar");
+  var main = document.getElementById("main");
+  main.style.minWidth = "";
+  var w1 = getComputedStyle(main).getPropertyValue("min-width");
+  var w2 = getComputedStyle(sidebar).getPropertyValue("width");
+  var w3 = getComputedStyle(sidebar).getPropertyValue("left");
+  main.style.minWidth = `calc(${w1} - ${w2} - ${w3})`;
+}
+</script>
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+  
+    
+  
+
+
+
+
+    
+  </body>
+</html>
+

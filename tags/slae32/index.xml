@@ -6,85 +6,68 @@
     <description>Recent content in SLAE32 on Andrea Perfetti</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <copyright>Andrea Perfetti</copyright>
     <lastBuildDate>Tue, 16 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://andrea-perfetti.github.io/tags/slae32/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>SLAE32 - Assignment 3 - EggHunter</title>
-      <link>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-16-slae32-assignment-3/</link>
+      <link>https://andrea-perfetti.github.io/2021/03/slae32-assignment-3-egghunter/</link>
       <pubDate>Tue, 16 Mar 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-16-slae32-assignment-3/</guid>
-      <description>The third assigment for the SLAE32 certification asks to study about the EggHunter shellcode and to create a working demo of it (the demo should be configurable for different payloads).
-Egg Hunting (tl;dr) The most basic Buffer Overflow exploit technique consists of creating a string that contains garbage bytes, a memory address to be overwritten on the return address (which will be popped into EIP during the ret procedure) and some shellcode to be then executed, being invoked via a JMP ESP.</description>
+      <guid>https://andrea-perfetti.github.io/2021/03/slae32-assignment-3-egghunter/</guid>
+      <description>&lt;p&gt;The third assigment for the SLAE32 certification asks to study about the &lt;em&gt;EggHunter&lt;/em&gt; shellcode and to create a working demo of it (the demo should be configurable for different payloads).&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>SLAE32 - Assignment 1 - TCP Bind Shell</title>
-      <link>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-14-slae32-assignment-1/</link>
+      <link>https://andrea-perfetti.github.io/2021/03/slae32-assignment-1-tcp-bind-shell/</link>
       <pubDate>Sun, 14 Mar 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-14-slae32-assignment-1/</guid>
-      <description>The first assigment for the SLAE32 certification asks to write a TCP Bind Shell shellcode that binds to a port and then executes a shell on the incoming connection. Requirement is that port number should be easily configurable.
-TCP Bind Shell in C Let&amp;rsquo;s first of all create a TCP bind shell in C that listens to port 4444. This is the code:
-#include &amp;lt;stdio.h&amp;gt;#include &amp;lt;sys/socket.h&amp;gt;#include &amp;lt;netinet/ip.h&amp;gt;#include &amp;lt;unistd.h&amp;gt; int main (){ // Creating File Descriptor for the Socket		int socket_fd; socket_fd = socket(AF_INET, SOCK_STREAM, 0); // Binding the socket to server address 	struct sockaddr_in server_address; server_address.</description>
+      <guid>https://andrea-perfetti.github.io/2021/03/slae32-assignment-1-tcp-bind-shell/</guid>
+      <description>&lt;p&gt;The first assigment for the SLAE32 certification asks to write a TCP Bind Shell shellcode that binds to a port and then executes a shell on the incoming connection. Requirement is that port number should be easily configurable.&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>SLAE32 - Assignment 2 - TCP Reverse Shell</title>
-      <link>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-14-slae32-assignment-2/</link>
+      <link>https://andrea-perfetti.github.io/2021/03/slae32-assignment-2-tcp-reverse-shell/</link>
       <pubDate>Sun, 14 Mar 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-14-slae32-assignment-2/</guid>
-      <description>The second assigment for the SLAE32 certification asks to write a TCP Reverse Shell shellcode that connects to an address and a port and then executes a shell on successful connection. Requirement is that IP address and port number should be easily configurable.
-TCP Reverse Shell in C Let&amp;rsquo;s first of all create a TCP reverse shell in C that listens to port 4444 on localhost. This is the code:</description>
+      <guid>https://andrea-perfetti.github.io/2021/03/slae32-assignment-2-tcp-reverse-shell/</guid>
+      <description>&lt;p&gt;The second assigment for the SLAE32 certification asks to write a TCP Reverse Shell shellcode that connects to an address and a port and then executes a shell on successful connection. Requirement is that IP address and port number should be easily configurable.&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>SLAE32 - Assignment 5 - Analysis</title>
-      <link>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-14-slae32-assignment-5/</link>
+      <link>https://andrea-perfetti.github.io/2021/03/slae32-assignment-5-analysis/</link>
       <pubDate>Sun, 14 Mar 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-14-slae32-assignment-5/</guid>
-      <description>The fifth assigment for the SLAE32 certification asks to choose 3 shellcode samples created with Msfpayload for linux/x86 and dissect them presenting the analysis.
-The list of available shellcodes have been generated using the following command:
-msfvenom --list payloads | grep linux/x86 ReadFile The first shellcode I have selected is linux/x86/read_file.
-First of all, we need to understand which parameters this shellcode needs:
-┌──(kali㉿kali)-[~/SLAE32-Exam/5.1-ReadFile] └─$ msfvenom -p linux/x86/read_file -a x86 --platform linux --list-options Options for payload/linux/x86/read_file: ========================= Name: Linux Read File Module: payload/linux/x86/read_file Platform: Linux Arch: x86 Needs Admin: No Total size: 62 Rank: Normal Provided by: hal Basic options: Name Current Setting Required Description ---- --------------- -------- ----------- FD 1 yes The file descriptor to write output to PATH yes The file path to read Description: Read up to 4096 bytes from the local file system and write it back out to the specified file descriptor I opted for /tmp/flag.</description>
+      <guid>https://andrea-perfetti.github.io/2021/03/slae32-assignment-5-analysis/</guid>
+      <description>&lt;p&gt;The fifth assigment for the SLAE32 certification asks to choose 3 shellcode samples created with Msfpayload for linux/x86 and dissect them presenting the analysis.&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>SLAE32 - Assignment 7 - Crypter</title>
-      <link>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-13-slae32-assignment-7/</link>
+      <link>https://andrea-perfetti.github.io/2021/03/slae32-assignment-7-crypter/</link>
       <pubDate>Sat, 13 Mar 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-13-slae32-assignment-7/</guid>
-      <description>The seventh assignment for the SLAE32 certification asks to create a custom crypter like the one shown in the &amp;ldquo;Crypters&amp;rdquo; video. You are free to use any existing encryption schema and any programming language.
-I have decided to use Python3 and - after some research - to give Fernet a try.
-According to the documentation (&amp;quot;Limitations&amp;quot; section):
- Fernet is ideal for encrypting data that easily fits in memory. As a design feature it does not expose unauthenticated bytes.</description>
+      <guid>https://andrea-perfetti.github.io/2021/03/slae32-assignment-7-crypter/</guid>
+      <description>&lt;p&gt;The seventh assignment for the SLAE32 certification asks to create a custom crypter like the one shown in the &amp;ldquo;Crypters&amp;rdquo; video. You are free to use any existing encryption schema and any programming language.&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>SLAE32 - Assignment 4 - Encoder</title>
-      <link>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-10-slae32-assignment-4/</link>
+      <link>https://andrea-perfetti.github.io/2021/03/slae32-assignment-4-encoder/</link>
       <pubDate>Thu, 11 Mar 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-10-slae32-assignment-4/</guid>
-      <description>The fourth assigment for the SLAE32 certification asks to create a custom encoding scheme like the &amp;ldquo;Insertion Encoder&amp;rdquo; that has been presented in the course. a PoC is also requested, using execve-stack shellcode.
-The encoding schema I have decided to go for a variation of the Insertion Encoder, adding some randomness. After each byte of the shellcode, I add a byte which could range from 0x1 to 0x4 and states how many garbage bytes will follow.</description>
+      <guid>https://andrea-perfetti.github.io/2021/03/slae32-assignment-4-encoder/</guid>
+      <description>&lt;p&gt;The fourth assigment for the SLAE32 certification asks to create a custom encoding scheme like the &amp;ldquo;Insertion Encoder&amp;rdquo; that has been presented in the course.  a PoC is also requested, using &lt;em&gt;execve-stack&lt;/em&gt; shellcode.&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>SLAE32 - Assignment 6 - Polymorphism</title>
-      <link>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-07-slae32-assignment-6/</link>
+      <link>https://andrea-perfetti.github.io/2021/03/slae32-assignment-6-polymorphism/</link>
       <pubDate>Thu, 11 Mar 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://andrea-perfetti.github.io/posts/slae32-exam/2021-03-07-slae32-assignment-6/</guid>
-      <description>The sixth assigment for the SLAE32 certification asks to select 3 shellcodes from Shell-Storm and create a polymorphic version of them in order to beat pattern matching.
-The polymorphic version cannot be larger more than 150% of the original shellcode.
-For each shellcode, the following steps have been followed:
- Download the shellcode into &amp;lt;Name&amp;gt;-Shellstorm&amp;lt;ID&amp;gt;.txt Extract the shellcode and pass it to ndisasm with the command:
-echo --ne &amp;quot;&amp;lt;SHELLCODE&amp;gt;&amp;quot; | ndisasm -u - &amp;gt; original_disasm.</description>
+      <guid>https://andrea-perfetti.github.io/2021/03/slae32-assignment-6-polymorphism/</guid>
+      <description>&lt;p&gt;The sixth assigment for the SLAE32 certification asks to select 3 shellcodes from &lt;a href=&#34;http://shell-storm.org/&#34;&gt;Shell-Storm&lt;/a&gt; and create a polymorphic version of them in order to beat pattern matching.&lt;/p&gt;</description>
     </item>
     
   </channel>

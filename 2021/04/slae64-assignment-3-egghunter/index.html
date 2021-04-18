@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.82.0 with theme Tranquilpeak 0.4.8-BETA">
+<meta name="author" content="Andrea Perfetti">
+<meta name="keywords" content="Assembly, Egg Hunter">
+<meta name="description" content="The third assigment for the SLAE64 certification asks to study about the EggHunter shellcode and to create a working demo of it.">
+
+
+<meta property="og:description" content="The third assigment for the SLAE64 certification asks to study about the EggHunter shellcode and to create a working demo of it.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SLAE64 - Assignment 3 - EggHunter">
+<meta name="twitter:title" content="SLAE64 - Assignment 3 - EggHunter">
+<meta property="og:url" content="https://andrea-perfetti.github.io/2021/04/slae64-assignment-3-egghunter/">
+<meta property="twitter:url" content="https://andrea-perfetti.github.io/2021/04/slae64-assignment-3-egghunter/">
+<meta property="og:site_name" content="Andrea Perfetti">
+<meta property="og:description" content="The third assigment for the SLAE64 certification asks to study about the EggHunter shellcode and to create a working demo of it.">
+<meta name="twitter:description" content="The third assigment for the SLAE64 certification asks to study about the EggHunter shellcode and to create a working demo of it.">
+<meta property="og:locale" content="en-us">
+
+  
+    <meta property="article:published_time" content="2021-04-05T00:00:00">
+  
+  
+    <meta property="article:modified_time" content="2021-04-05T00:00:00">
+  
+  
+  
+    
+      <meta property="article:section" content="SLAE Exam Assignments">
+    
+      <meta property="article:section" content="SLAE 64-bit">
+    
+  
+  
+    
+      <meta property="article:tag" content="SLAE64">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+
+
+  <meta property="og:image" content="https://andrea-perfetti.github.io/img/slae64/0_slae64_badge.png">
+  <meta property="twitter:image" content="https://andrea-perfetti.github.io/img/slae64/0_slae64_badge.png">
+
+
+
+
+
+  <meta property="og:image" content="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg">
+  <meta property="twitter:image" content="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg">
+
+
+    <title>SLAE64 - Assignment 3 - EggHunter</title>
+
+    <link rel="icon" href="https://andrea-perfetti.github.io/favicon.png">
+    
+
+    
+
+    <link rel="canonical" href="https://andrea-perfetti.github.io/2021/04/slae64-assignment-3-egghunter/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="https://andrea-perfetti.github.io/css/style-twzjdbqhmnnacqs0pwwdzcdbt8yhv8giawvjqjmyfoqnvazl0dalmnhdkvp7.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="2">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="https://andrea-perfetti.github.io/">Andrea Perfetti</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="https://andrea-perfetti.github.io/#about">
+    
+    
+    
+      
+        <img class="header-picture" src="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg" alt="Author&#39;s picture" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="2">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="https://andrea-perfetti.github.io/#about">
+          <img class="sidebar-profile-picture" src="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg" alt="Author&#39;s picture" />
+        </a>
+        <h4 class="sidebar-profile-name">Andrea Perfetti</h4>
+        
+          <h5 class="sidebar-profile-bio">YHQL, YLGL, YLFL.</h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+      
+      <span class="sidebar-button-desc">Home</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/categories">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+      
+      <span class="sidebar-button-desc">Categories</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/tags">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+      
+      <span class="sidebar-button-desc">Tags</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/archives">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+      
+      <span class="sidebar-button-desc">Archives</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/about/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+      
+      <span class="sidebar-button-desc">About</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/andrea-perfetti" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://andrea-perfetti.github.io/index.xml">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="2"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      SLAE64 - Assignment 3 - EggHunter
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2021-04-05T00:00:00Z">
+        
+  
+  
+  
+  
+    2021-04-05
+  
+
+      </time>
+    
+    
+  
+  
+    <span>in</span>
+    
+      <a class="category-link" href="https://andrea-perfetti.github.io/categories/slae-exam-assignments">SLAE Exam Assignments</a>, 
+    
+      <a class="category-link" href="https://andrea-perfetti.github.io/categories/slae-64-bit">SLAE 64-bit</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              <p>The third assigment for the SLAE64 certification asks to study about the <em>EggHunter</em> shellcode and to create a working demo of it.</p>
+<h2 id="egg-hunting-tldr">Egg Hunting (tl;dr)</h2>
+<p>The most basic Buffer Overflow exploit technique consists of creating a string that contains garbage bytes, a memory address to be overwritten on the return address (which will be popped into EIP during the <code>ret</code> procedure) and some shellcode to be then executed, being invoked via a JMP ESP.</p>
+<p>This is a conceptual representation of the payload, where section &lsquo;A&rsquo; contains garbage bytes, section &lsquo;B&rsquo; the memory address of a suitable instruction to redirect the execution flow to the section &lsquo;C&rsquo;:
+<img src="https://andrea-perfetti.github.io/img/slae/slae3-bof-concept.png" alt="Buffer Overflow payload basic representation"></p>
+<p>It is all working in the concept, but what happens if the &lsquo;C&rsquo; section is too small to contain the intended shellcode? What if we could place our complete shellcode in other memory sections and then search for it and execute it?<br>
+This is the exact purpose of the EggHunting technique:</p>
+<ul>
+<li>to put the complete shellcode somewhere in the process memory area (even in the &lsquo;A&rsquo; section) prefixing it with an &lsquo;egg&rsquo; - simply, a marker - repeated two-times (to ensure uniqueness)</li>
+<li>to create a very short shellcode - the <em>Egg Hunter</em> itself - to find the double-egg in memory and then redirect the execution flow just right after it.</li>
+</ul>
+<p><img src="https://andrea-perfetti.github.io/img/slae/slae3-bof-egghunter-concept.png" alt="Buffer Overflow egghunting basic representation"></p>
+<h2 id="egghunter-shellcode">EggHunter shellcode</h2>
+<p>Skape&rsquo;s paper &ldquo;<a href="http://www.hick.org/code/skape/papers/egghunt-shellcode.pdf">Safely Searching Process Virtual Address Space</a>&rdquo; can be easily defined as both the <em>blueprint</em> and the <em>masterpiece</em> of Egg Hunting. This document presents three different implementations of EggHunter shellcode for Linux and three implementations for Windows.</p>
+<p>The EggHunting shellcode leverages the <a href="https://man7.org/linux/man-pages/man2/access.2.html">access()</a> syscall. For each memory page, the shellcode tries accessing the address; if 0xF2 error is returned (EFAULT) it means that the pointer is outside the accessible address space, and therefore it goes to the next page; if page is accessible, addresses are scanned in order to find the egg (0xDEADBEEF in the shellcode) repeated twice.
+When it is found, the address of the start of the shellcode is contained into register RDI and therefore a jump to RDI is performed.</p>
+<p>In order to test the correct execution, I have added a &ldquo;jmp_to_egg&rdquo; label just right before the jump to the shellcode found after the egg, and an appropriate breakpoint has been added:
+<img src="https://andrea-perfetti.github.io/img/slae64/3-egghunter-1-functionsbreaks.png" alt="EggHunter - GDB - Breakpoint"></p>
+<p>When the breakpoint is reached, it means that the egg has been found - repeated two times - in memory.
+<img src="https://andrea-perfetti.github.io/img/slae64/3-egghunter-2-breakreached.png" alt=""></p>
+<p>As expected, the next instruction will be a <code>jmp rdi</code>:
+<img src="https://andrea-perfetti.github.io/img/slae64/3-egghunter-disas.png" alt=""></p>
+<p>Looking at the value in the register RDI, we see that in the execution it is <code>0x4000b0</code>. Given that the shellcode (label &lsquo;Shellcode&rsquo;) starts at <code>0x4000a8</code> and the first 8 bytes are the two copies of the egg, it means that <code>0x4000b0</code> is the start address of the actual shellcode right after the eggs.
+<img src="https://andrea-perfetti.github.io/img/slae64/3-egghunter-variables.png" alt=""></p>
+<p>Running the compiled (remember that Stack has to be marked as executable, therefore I used the &lsquo;compileExec.sh&rsquo; utility) program in the terminal it behaves as expected, i.e. exits with status code 13:
+<img src="https://andrea-perfetti.github.io/img/slae64/3-egghunter-poc1.png" alt=""></p>
+<p>I created another version of the same program, under <code>/Test2/</code> directory: it is exactly the same except for the shellcode, which is at the top of the &lsquo;.text&rsquo; section instead of the &lsquo;.data&rsquo; section. It behaves in the same exact way:
+<img src="https://andrea-perfetti.github.io/img/slae64/3-egghunter-poc2.png" alt=""></p>
+<!-- raw HTML omitted -->
+<hr>
+<p>This blog post has been created for completing the requirements of the SecurityTube Linux Assembly Expert certification: <a href="http://www.securitytube-training.com/online-courses/x8664-assembly-and-shellcoding-on-linux/index.html">http://www.securitytube-training.com/online-courses/x8664-assembly-and-shellcoding-on-linux/index.html</a>.</p>
+<p><strong>Student ID</strong>: <code>PA-29059</code><br>
+<strong>GitHub repository</strong>: <a href="https://github.com/andrea-perfetti/SLAE64-Exam">https://github.com/andrea-perfetti/SLAE64-Exam</a></p>
+<p>This assignment has been written on a Kali Linux 2021.1 64-bit virtual machine:</p>
+<pre><code>┌──(kali㉿kali)-[~]
+└─$ uname -a
+Linux kali 5.10.0-kali3-amd64 #1 SMP Debian 5.10.13-1kali1 (2021-02-08) x86_64 GNU/Linux
+</code></pre>
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">TAGGED IN</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="https://andrea-perfetti.github.io/tags/slae64/">SLAE64</a>
+
+                  </div>
+                
+              
+            
+            <div class="post-actions-wrap">
+  
+      <nav style="visibility: hidden">
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://andrea-perfetti.github.io/2021/04/slae64-assignment-1-tcp-bind-shell-with-passcode/" data-tooltip="SLAE64 - Assignment 1 - TCP Bind Shell with passcode">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://andrea-perfetti.github.io/2021/04/slae64-assignment-2-tcp-reverse-shell-with-passcode/" data-tooltip="SLAE64 - Assignment 2 - TCP Reverse Shell with passcode">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+            
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2021 Andrea Perfetti. All Rights Reserved
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="2">
+        <div class="post-actions-wrap">
+  
+      <nav style="visibility: hidden">
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://andrea-perfetti.github.io/2021/04/slae64-assignment-1-tcp-bind-shell-with-passcode/" data-tooltip="SLAE64 - Assignment 1 - TCP Bind Shell with passcode">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://andrea-perfetti.github.io/2021/04/slae64-assignment-2-tcp-reverse-shell-with-passcode/" data-tooltip="SLAE64 - Assignment 2 - TCP Reverse Shell with passcode">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="2">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-remove"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://andrea-perfetti.github.io/img/me/me_bgWhite.jpg" alt="Author&#39;s picture" />
+    
+    <h4 id="about-card-name">Andrea Perfetti</h4>
+    
+      <div id="about-card-bio">YHQL, YLGL, YLFL.</div>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        IT Security Specialist
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker"></i>
+        <br/>
+        Italy
+      </div>
+    
+  </div>
+</div>
+
+    
+
+    
+  
+    
+      <div id="cover" style="background-image:url('https://andrea-perfetti.github.io/img/wallpa/pexels-elijah-o%27donnell-3473569.jpg');"></div>
+    
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="https://andrea-perfetti.github.io/js/script-pcw6v3xilnxydl1vddzazdverrnn9ctynvnxgwho987mfyqkuylcb1nlt.min.js"></script>
+
+
+<script lang="javascript">
+window.onload = updateMinWidth;
+window.onresize = updateMinWidth;
+document.getElementById("sidebar").addEventListener("transitionend", updateMinWidth);
+function updateMinWidth() {
+  var sidebar = document.getElementById("sidebar");
+  var main = document.getElementById("main");
+  main.style.minWidth = "";
+  var w1 = getComputedStyle(main).getPropertyValue("min-width");
+  var w2 = getComputedStyle(sidebar).getPropertyValue("width");
+  var w3 = getComputedStyle(sidebar).getPropertyValue("left");
+  main.style.minWidth = `calc(${w1} - ${w2} - ${w3})`;
+}
+</script>
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+  
+    
+  
+
+
+
+
+    
+  </body>
+</html>
+
